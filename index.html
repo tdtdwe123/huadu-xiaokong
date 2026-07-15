@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>花都区新盘销控表</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",Arial,sans-serif;background:#f4f6f9;color:#222;font-size:14px}
+header{position:sticky;top:0;z-index:20;background:#1f6feb;color:#fff;padding:10px 14px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+header h1{margin:0;font-size:17px;font-weight:600}
+header .sub{font-size:11px;opacity:.85;margin-top:2px}
+.bar{position:sticky;top:52px;z-index:15;background:#fff;padding:8px 12px;border-bottom:1px solid #e8e8e8;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar input,.bar select{border:1px solid #d9d9d9;border-radius:6px;padding:6px 10px;font-size:13px;outline:none}
+.bar input{flex:1;min-width:120px}
+.bar input:focus,.bar select:focus{border-color:#1f6feb}
+.bar button{border:none;border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;background:#eef2ff;color:#1f6feb;font-weight:500}
+.bar button.on{background:#1f6feb;color:#fff}
+.list{padding:8px 12px 40px}
+.row{background:#fff;border-radius:10px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.row .head{display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:8px}
+.row .head .name{font-weight:600;font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .head .area{font-size:11px;color:#888;background:#f0f0f0;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.row .head .rate{font-size:13px;font-weight:700;color:#e8590c;white-space:nowrap}
+.row .head .nums{font-size:11px;color:#888;white-space:nowrap}
+.row .head .arrow{color:#bbb;transition:transform .2s;font-size:12px}
+.row.open .arrow{transform:rotate(90deg)}
+.detail{display:none;padding:0 14px 14px;border-top:1px solid #f0f0f0}
+.row.open .detail{display:block}
+.detail .info{font-size:12px;color:#666;line-height:1.8;margin-top:10px}
+.detail .info b{color:#333;font-weight:500}
+.stat-box{display:flex;gap:8px;margin:10px 0}
+.stat-box .stat{flex:1;background:#f8f9fc;border-radius:8px;padding:8px;text-align:center}
+.stat-box .stat .n{font-size:18px;font-weight:700}
+.stat-box .stat .l{font-size:10px;color:#888;margin-top:2px}
+.stat-box .stat.sold .n{color:#e8590c}
+.stat-box .stat.unsold .n{color:#1f6feb}
+.stat-box .stat.total .n{color:#333}
+.buildings{margin-top:6px}
+.bld{margin-bottom:8px;border:1px solid #eee;border-radius:8px;overflow:hidden}
+.bld .bhead{background:#f8f9fc;padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.bld .bhead .cnt{font-size:11px;color:#888;font-weight:400}
+.bld .bbody{display:none;padding:8px 10px}
+.bld.open .bbody{display:block}
+.floor{display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+.floor .fl{font-size:10px;color:#999;width:28px;text-align:right;flex-shrink:0}
+.unit{display:inline-flex;align-items:center;justify-content:center;width:42px;height:26px;border-radius:4px;font-size:10px;color:#fff;cursor:default;position:relative;margin:1px}
+.unit[data-s="2"],.unit[data-s="4"]{background:#52c41a}
+.unit[data-s="5"]{background:#e8590c}
+.unit[data-s="6"]{background:#868e96}
+.unit[data-s="1"],.unit[data-s="3"]{background:#dee2e6;color:#888}
+.unit[data-s="0"],.unit:not([data-s]){background:#dee2e6;color:#888}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:#888;margin:6px 0 2px}
+.legend span{display:inline-flex;align-items:center;gap:3px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.loading{text-align:center;padding:20px;color:#999;font-size:13px}
+.err{color:#e03131;font-size:12px;padding:8px 0}
+.empty{text-align:center;padding:40px 20px;color:#999}
+.note{font-size:11px;color:#aaa;text-align:center;padding:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>花都区新盘销控表</h1>
+  <div class="sub" id="updated">加载中…</div>
+</header>
+<div class="bar">
+  <input id="q" placeholder="搜索楼盘名 / 开发商…" />
+  <select id="areaFilter"><option value="">全部板块</option></select>
+  <button id="refresh" class="on">刷新</button>
+</div>
+<div class="list" id="list">
+  <div class="loading">正在加载实时数据…</div>
+</div>
+<div class="note">数据来源：广州市住建局「阳光家缘」 · 仅供参考</div>
+
+<script>
+let DATA = null;
+let filtered = [];
+
+// 状态码：2/4=可售(绿), 5=已售(橙), 6=冻结(灰), 1/3=不可售(浅灰)
+function statusText(s){
+  const m={2:'可售',4:'可售',5:'已售',6:'冻结',1:'不可售',3:'不可售'};
+  return m[s]||'未知';
+}
+
+function inferStatus(u){
+  // 如果 status 缺失，尝试从 pledgeStatus/closed 推断
+  if(u.status!=null) return u.status;
+  if(u.closed) return 6;
+  if(u.pledgeStatus) return 4;
+  return 2;
+}
+
+async function loadData(){
+  try{
+    // 同目录 data.json
+    const r = await fetch('data.json?_='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    DATA = await r.json();
+    document.getElementById('updated').textContent = '更新于 '+DATA.updated+' · 共 '+DATA.count+' 个楼盘';
+    buildAreaFilter();
+    render();
+  }catch(e){
+    document.getElementById('list').innerHTML = '<div class="err">数据加载失败：'+e.message+'<br>请稍后刷新页面重试。</div>';
+  }
+}
+
+function buildAreaFilter(){
+  const areas = [...new Set(DATA.projects.map(p=>p.area).filter(Boolean))].sort();
+  const sel = document.getElementById('areaFilter');
+  areas.forEach(a=>{
+    const o=document.createElement('option');
+    o.value=a; o.textContent=a;
+    sel.appendChild(o);
+  });
+}
+
+function render(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const af = document.getElementById('areaFilter').value;
+  filtered = DATA.projects.filter(p=>{
+    if(af && p.area!==af) return false;
+    if(q && !(p.name.toLowerCase().includes(q) || (p.developer||'').toLowerCase().includes(q))) return false;
+    return true;
+  });
+  const el = document.getElementById('list');
+  if(filtered.length===0){
+    el.innerHTML = '<div class="empty">没有匹配的楼盘</div>';
+    return;
+  }
+  el.innerHTML = filtered.map((p,idx)=>{
+    const d = p.detail;
+    const sum = d && d.summary ? d.summary : {};
+    const sold = sum.totalSaleNum || 0;
+    const unsold = sum.totalNosoldNum || 0;
+    const total = sum.allowPresellNum || (sold+unsold) || 0;
+    const rate = total>0 ? (sold/total*100).toFixed(1) : '0.0';
+    return `<div class="row" data-idx="${idx}">
+      <div class="head" onclick="toggleRow(${idx})">
+        <span class="name">${esc(p.name)}</span>
+        <span class="area">${esc(p.area||'')}</span>
+        <span class="rate">${rate}%</span>
+        <span class="nums">售${sold}/未${unsold}</span>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="detail" id="d${idx}"></div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRow(idx){
+  const row = document.querySelector(`.row[data-idx="${idx}"]`);
+  if(!row) return;
+  const open = row.classList.toggle('open');
+  if(open){
+    renderDetail(idx);
+  }
+}
+
+function renderDetail(idx){
+  const p = filtered[idx];
+  const el = document.getElementById('d'+idx);
+  const d = p.detail;
+  if(!d){
+    el.innerHTML = '<div class="err">该项目实时数据获取失败</div>';
+    return;
+  }
+  const sum = d.summary || {};
+  const sold = sum.totalSaleNum || 0;
+  const unsold = sum.totalNosoldNum || 0;
+  const total = sum.allowPresellNum || (sold+unsold) || 0;
+  const info = d.info || {};
+  const blds = d.buildings || [];
+  el.innerHTML = `
+    <div class="info">
+      <b>开发商：</b>${esc(info.developer||p.developer||'-')}<br>
+      <b>预售证：</b>${esc(info.preSellNo||p.presell||'-')}<br>
+      <b>地址：</b>${esc(info.pjAddress||p.address||'-')}<br>
+      <b>总面积：</b>${esc(info.totalBuildingArea||'-')}㎡
+    </div>
+    <div class="stat-box">
+      <div class="stat sold"><div class="n">${sold}</div><div class="l">已售</div></div>
+      <div class="stat unsold"><div class="n">${unsold}</div><div class="l">未售</div></div>
+      <div class="stat total"><div class="n">${total}</div><div class="l">总套数</div></div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#52c41a"></i>可售</span>
+      <span><i style="background:#e8590c"></i>已售</span>
+      <span><i style="background:#868e96"></i>冻结</span>
+      <span><i style="background:#dee2e6"></i>不可售</span>
+    </div>
+    <div class="buildings">
+      ${blds.length===0?'<div class="err">暂无楼栋销控数据</div>':
+        blds.map((b,bi)=>`
+        <div class="bld" id="b${idx}_${bi}">
+          <div class="bhead" onclick="toggleBld(${idx},${bi})">
+            <span>${esc(b.name||'楼栋'+(bi+1))}</span>
+            <span class="cnt">${b.floors.reduce((s,f)=>s+f.units.length,0)}套 · ${b.floors.length}层</span>
+          </div>
+          <div class="bbody">
+            ${b.floors.map(f=>`
+              <div class="floor">
+                <span class="fl">${esc(f.floor)}</span>
+                ${f.units.map(u=>{
+                  const s=inferStatus(u);
+                  return `<span class="unit" data-s="${s}" title="${esc(u.unitNum||'')} · ${esc(u.unitType||'')} · ${esc(u.totalArea||'')}㎡ · ${statusText(s)}">${esc((u.unitNum||'').slice(-3))}</span>`;
+                }).join('')}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  // 默认展开第一个楼栋
+  if(blds.length>0) toggleBld(idx,0);
+}
+
+function toggleBld(idx,bi){
+  const el = document.getElementById('b'+idx+'_'+bi);
+  if(el) el.classList.toggle('open');
+}
+
+function esc(s){
+  if(s==null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// 事件绑定
+document.getElementById('q').addEventListener('input', render);
+document.getElementById('areaFilter').addEventListener('change', render);
+document.getElementById('refresh').addEventListener('click', ()=>{
+  document.getElementById('list').innerHTML = '<div class="loading">正在重新加载…</div>';
+  loadData();
+});
+
+// 启动
+loadData();
+</script>
+</body>
+</html>
