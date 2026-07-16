@@ -68,6 +68,10 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .err{color:#e03131;font-size:12px;padding:8px 0}
 .empty{text-align:center;padding:40px 20px;color:#999}
 .note{font-size:11px;color:#aaa;text-align:center;padding:8px}
+.bnames{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.bproj{font-size:13px;font-weight:600;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.bbn{font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.infobn{color:#1565c0;font-weight:600}
 </style>
 </head>
 <body>
@@ -185,6 +189,8 @@ function renderDetail(idx){
   const blds = d.buildings || [];
   el.innerHTML = `
     <div class="info">
+      <b>楼盘名称：</b>${esc(p.name)}<br>
+      <b>备案名称：</b><span class="infobn">${esc(info.projectName||p.name)}</span><br>
       <b>开发商：</b>${esc(info.developer||p.developer||'-')}<br>
       <b>预售证：</b>${esc(info.preSellNo||p.presell||'-')}<br>
       <b>地址：</b>${esc(info.pjAddress||p.address||'-')}<br>
@@ -206,7 +212,10 @@ function renderDetail(idx){
         blds.map((b,bi)=>`
         <div class="bld" id="b${idx}_${bi}">
           <div class="bhead" onclick="toggleBld(${idx},${bi})">
-            <span>${esc(b.name||'楼栋'+(bi+1))}</span>
+            <span class="bnames">
+              <span class="bproj">${esc(p.name)}</span>
+              <span class="bbn">备案楼栋：${esc(cleanBld(b.name)||'楼栋'+(bi+1))}</span>
+            </span>
             <span class="cnt">${b.floors.reduce((s,f)=>s+f.units.length,0)}套 · ${b.floors.length}层</span>
           </div>
           <div class="bbody">
@@ -245,6 +254,12 @@ function fmtArea(a){
   if(a==null || a==='') return '';
   const n = parseFloat(a);
   return isNaN(n) ? String(a) : (Math.round(n*10)/10).toString();
+}
+
+// 清理楼栋名：去掉多余的空括号、首尾空白
+function cleanBld(n){
+  if(!n) return '';
+  return String(n).replace(/\(\)/g,'').replace(/\s+/g,' ').trim();
 }
 
 function statusColor(s){
