@@ -144,9 +144,10 @@ def main():
         time.sleep(0.4)
 
     print(f"\n成功 {ok}/{len(projects)}", flush=True)
-    # 保护机制：如果成功数太少（多为接口不可达），不覆盖已有数据，避免清空页面
-    if ok < 200:
-        print(f"成功数 {ok} 过少，疑似接口不可达，跳过写入 data.json", flush=True)
+    # 保护机制：GitHub 境外 runner 访问接口不稳定，只有抓到接近完整才提交，
+    # 否则不覆盖已有数据（本地中国服务器每能稳定抓到 254 条）
+    if ok < 250:
+        print(f"成功数 {ok} 不足，疑似接口不可达，跳过写入 data.json", flush=True)
         return
 
     out = {
