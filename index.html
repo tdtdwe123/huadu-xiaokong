@@ -44,12 +44,23 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .bld.open .bbody{display:block}
 .floor{display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap}
 .floor .fl{font-size:10px;color:#999;width:28px;text-align:right;flex-shrink:0}
-.unit{display:inline-flex;align-items:center;justify-content:center;width:42px;height:26px;border-radius:4px;font-size:10px;color:#fff;cursor:default;position:relative;margin:1px}
+.unit{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:38px;border-radius:4px;font-size:10px;color:#fff;cursor:pointer;position:relative;margin:1px;line-height:1.15;padding:1px 0}
+.unit .un{font-weight:700;font-size:11px}
+.unit .ua{font-size:8px;opacity:.92;transform:scale(.94);white-space:nowrap}
 .unit[data-s="2"],.unit[data-s="4"]{background:#52c41a}
 .unit[data-s="5"]{background:#e8590c}
 .unit[data-s="6"]{background:#868e96}
 .unit[data-s="1"],.unit[data-s="3"]{background:#dee2e6;color:#888}
 .unit[data-s="0"],.unit:not([data-s]){background:#dee2e6;color:#888}
+.unit-pop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:100;align-items:center;justify-content:center}
+.unit-pop.show{display:flex}
+.unit-pop-box{background:#fff;border-radius:12px;padding:18px 20px 14px;max-width:320px;width:84%;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.unit-pop-close{position:absolute;top:6px;right:12px;font-size:22px;color:#bbb;cursor:pointer;line-height:1}
+.unit-pop .ttl{font-size:18px;font-weight:700;margin-bottom:10px;padding-right:20px}
+.unit-pop .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.unit-pop .row:last-child{border-bottom:none}
+.unit-pop .row .k{color:#888}
+.unit-pop .row .v{font-weight:600}
 .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:#888;margin:6px 0 2px}
 .legend span{display:inline-flex;align-items:center;gap:3px}
 .legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
@@ -199,12 +210,15 @@ function renderDetail(idx){
             <span class="cnt">${b.floors.reduce((s,f)=>s+f.units.length,0)}套 · ${b.floors.length}层</span>
           </div>
           <div class="bbody">
-            ${b.floors.map(f=>`
+            ${b.floors.map((f,fi)=>`
               <div class="floor">
                 <span class="fl">${esc(f.floor)}</span>
-                ${f.units.map(u=>{
+                ${f.units.map((u,ui)=>{
                   const s=inferStatus(u);
-                  return `<span class="unit" data-s="${s}" title="${esc(u.unitNum||'')} · ${esc(u.unitType||'')} · ${esc(u.totalArea||'')}㎡ · ${statusText(s)}">${esc((u.unitNum||'').slice(-3))}</span>`;
+                  return `<span class="unit" data-s="${s}" onclick="showUnit(${idx},${bi},${fi},${ui})">`
+                    + `<span class="un">${esc(u.unitNum||'')}</span>`
+                    + `<span class="ua">${esc(fmtArea(u.totalArea))}㎡</span>`
+                    + `</span>`;
                 }).join('')}
               </div>
             `).join('')}
@@ -227,6 +241,41 @@ function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function fmtArea(a){
+  if(a==null || a==='') return '';
+  const n = parseFloat(a);
+  return isNaN(n) ? String(a) : (Math.round(n*10)/10).toString();
+}
+
+function statusColor(s){
+  const m={2:'#52c41a',4:'#52c41a',5:'#e8590c',6:'#868e96',1:'#adb5bd',3:'#adb5bd'};
+  return m[s]||'#333';
+}
+
+function showUnit(idx,bi,fi,ui){
+  const u = filtered[idx] && filtered[idx].detail
+    && filtered[idx].detail.buildings[bi]
+    && filtered[idx].detail.buildings[bi].floors[fi]
+    && filtered[idx].detail.buildings[bi].floors[fi].units[ui];
+  if(!u) return;
+  const s = inferStatus(u);
+  const body = document.getElementById('unitPopBody');
+  body.innerHTML = `
+    <div class="ttl">${esc(u.unitNum||'')}</div>
+    <div class="row"><span class="k">状态</span><span class="v" style="color:${statusColor(s)}">${statusText(s)}</span></div>
+    <div class="row"><span class="k">户型</span><span class="v">${esc(u.unitType||'-')}</span></div>
+    <div class="row"><span class="k">建筑面积</span><span class="v">${esc(fmtArea(u.totalArea))} ㎡</span></div>
+    <div class="row"><span class="k">套内面积</span><span class="v">${esc(fmtArea(u.inArea))} ㎡</span></div>
+    <div class="row"><span class="k">功能</span><span class="v">${esc(u.houseFunction||'-')}</span></div>
+  `;
+  document.getElementById('unitPop').classList.add('show');
+}
+
+function hideUnit(){
+  const el = document.getElementById('unitPop');
+  if(el) el.classList.remove('show');
+}
+
 // 事件绑定
 document.getElementById('q').addEventListener('input', render);
 document.getElementById('areaFilter').addEventListener('change', render);
@@ -238,5 +287,12 @@ document.getElementById('refresh').addEventListener('click', ()=>{
 // 启动
 loadData();
 </script>
+
+<div id="unitPop" class="unit-pop" onclick="hideUnit()">
+  <div class="unit-pop-box" onclick="event.stopPropagation()">
+    <div class="unit-pop-close" onclick="hideUnit()">×</div>
+    <div id="unitPopBody"></div>
+  </div>
+</div>
 </body>
 </html>
