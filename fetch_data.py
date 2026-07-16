@@ -20,7 +20,7 @@ PROJECTS_FILE = os.path.join(os.path.dirname(__file__), "projects.json")
 OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "data.json")
 
 
-def gov_get(path, params, retries=3, timeout=30):
+def gov_get(path, params, retries=1, timeout=12):
     url = GOV_BASE + path + "?" + urllib.parse.urlencode(params)
     last = None
     for i in range(retries):
@@ -34,7 +34,7 @@ def gov_get(path, params, retries=3, timeout=30):
             last = f"status={d.get('status')}"
         except Exception as e:
             last = str(e)
-        time.sleep(1.5 * (i + 1))
+        time.sleep(0.8 * (i + 1))
     return None
 
 
@@ -117,8 +117,8 @@ def main():
         projects = json.load(f)
     print(f"共 {len(projects)} 个楼盘", flush=True)
 
-    out = {"updated": time.strftime("%Y-%m-%d %H:%M:%S"), "count": len(projects), "projects": []}
     ok = 0
+    out_projects = []
     for i, p in enumerate(projects):
         pid = p["id"]
         try:
@@ -126,27 +126,37 @@ def main():
         except Exception as e:
             print(f"[{i+1}/{len(projects)}] {p['name']} 失败: {e}", flush=True)
             detail = None
-        slim = {
-            "id": pid,
-            "name": p["name"],
-            "developer": p.get("developer"),
-            "presell": p.get("presell"),
-            "address": p.get("address"),
-            "area": p.get("area"),
-            "lng": p.get("lng"),
-            "lat": p.get("lat"),
-            "detail": detail,
-        }
-        out["projects"].append(slim)
         if detail:
+            slim = {
+                "id": pid,
+                "name": p["name"],
+                "developer": p.get("developer"),
+                "presell": p.get("presell"),
+                "address": p.get("address"),
+                "area": p.get("area"),
+                "lng": p.get("lng"),
+                "lat": p.get("lat"),
+                "detail": detail,
+            }
+            out_projects.append(slim)
             ok += 1
-        print(f"[{i+1}/{len(projects)}] {p['name']} {'OK' if detail else 'FAIL'}", flush=True)
-        # 控制请求频率，避免被限流
-        time.sleep(0.8)
+        print(f"[{i+1}/{len(projects)}] {p['name']} {'OK' if detail else 'SKIP'}", flush=True)
+        time.sleep(0.4)
 
+    print(f"\n成功 {ok}/{len(projects)}", flush=True)
+    # 保护机制：如果成功数太少（多为接口不可达），不覆盖已有数据，避免清空页面
+    if ok < 200:
+        print(f"成功数 {ok} 过少，疑似接口不可达，跳过写入 data.json", flush=True)
+        return
+
+    out = {
+        "updated": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "count": ok,
+        "projects": out_projects,
+    }
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-    print(f"\n完成：{ok}/{len(projects)} 成功，写入 {OUTPUT_FILE}", flush=True)
+    print(f"已写入 {OUTPUT_FILE}（{ok} 个楼盘）", flush=True)
 
 
 if __name__ == "__main__":
