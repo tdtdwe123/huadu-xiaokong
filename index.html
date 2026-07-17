@@ -77,7 +77,17 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .bbn{font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 .infobn{color:#1565c0;font-weight:600}
 .src{font-size:10px;color:#aaa;font-weight:400}
+.seg{display:inline-flex;border:1px solid #d9d9d9;border-radius:6px;overflow:hidden}
+.seg button{border:none;background:#fff;padding:6px 12px;font-size:13px;cursor:pointer;color:#555}
+.seg button.on{background:#1f6feb;color:#fff}
+#map{display:none;height:calc(100vh - 132px);width:100%;background:#eaeaea;position:relative}
+body.map #list{display:none}
+body.map #map{display:block}
+.maplabel{font-size:11px;font-weight:600;color:#1565c0;background:rgba(255,255,255,.9);border:1px solid #cfe3ff;padding:1px 4px;border-radius:3px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.map-namebtn{position:absolute;z-index:600;right:10px;bottom:18px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:6px 12px;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer}
+.map-namebtn.on{background:#1f6feb;color:#fff}
 </style>
+<link rel="stylesheet" href="leaflet.css" />
 </head>
 <body>
 <header>
@@ -87,13 +97,19 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 <div class="bar">
   <input id="q" placeholder="搜索楼盘名 / 开发商…" />
   <select id="areaFilter"><option value="">全部板块</option></select>
+  <span class="seg">
+    <button id="viewList" class="on" onclick="showView('list')">列表</button>
+    <button id="viewMap" onclick="showView('map')">地图</button>
+  </span>
   <button id="refresh" class="on">刷新</button>
 </div>
 <div class="list" id="list">
   <div class="loading">正在加载实时数据…</div>
 </div>
+<div id="map"><button id="labelToggle" class="map-namebtn" onclick="toggleLabels()">名称</button></div>
 <div class="note">数据来源：广州市住建局「阳光家缘」 · 仅供参考</div>
 
+<script src="leaflet.js"></script>
 <script>
 let DATA = null;
 let filtered = [];
@@ -140,6 +156,7 @@ async function loadData(){
       }
     }catch(e){ /* 对照表缺失不影响主功能 */ }
     document.getElementById('updated').textContent = '更新于 '+DATA.updated+' · 共 '+DATA.count+' 个楼盘';
+    MAP_DIRTY = true;
     buildAreaFilter();
     render();
   }catch(e){
@@ -327,6 +344,122 @@ function showUnit(idx,bi,fi,ui){
 function hideUnit(){
   const el = document.getElementById('unitPop');
   if(el) el.classList.remove('show');
+}
+
+// ===== 地图 =====
+let MAP = null;
+let MARKERS = null;
+let MAP_DIRTY = true;
+let LABELS_ON = false;
+
+function mapRateColor(rate){
+  const r = parseFloat(rate)||0;
+  if(r >= 80) return '#e8590c';   // 高去化 橙
+  if(r >= 50) return '#f59f00';   // 中高 黄
+  if(r >= 20) return '#1c7ed6';   // 中低 蓝
+  return '#37b24d';               // 低 绿
+}
+
+function showView(v){
+  const listBtn = document.getElementById('viewList');
+  const mapBtn = document.getElementById('viewMap');
+  if(v === 'map'){
+    document.body.classList.add('map');
+    listBtn.classList.remove('on');
+    mapBtn.classList.add('on');
+    if(!MAP) initMap();
+    else setTimeout(()=>MAP.invalidateSize(), 60);
+    if(MAP_DIRTY && MAP){ rebuildMarkers(); MAP_DIRTY = false; }
+  } else {
+    document.body.classList.remove('map');
+    listBtn.classList.add('on');
+    mapBtn.classList.remove('on');
+  }
+}
+
+function initMap(){
+  MAP = L.map('map', {zoomControl:true}).setView([23.42, 113.22], 12);
+  // 高德地图瓦片（国内加载快，含中文标注），备选可用 OSM
+  L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}',
+    {subdomains:'1234', maxZoom:18, attribution:'© 高德地图'}).addTo(MAP);
+  MARKERS = L.layerGroup().addTo(MAP);
+  rebuildMarkers();
+  MAP_DIRTY = false;
+}
+
+function rebuildMarkers(){
+  if(!MAP || !MARKERS) return;
+  MARKERS.clearLayers();
+  const bounds = [];
+  DATA.projects.forEach((p, i)=>{
+    const lat = p.lat, lng = p.lng;
+    if(!lat || !lng) return;
+    const al = aliasOf(p.name);
+    const name = al ? al.alias : p.name;
+    const d = p.detail || {};
+    const sum = d.summary || {};
+    const sold = sum.totalSaleNum || 0;
+    const unsold = sum.totalNosoldNum || 0;
+    const total = sum.allowPresellNum || (sold + unsold) || 0;
+    const rate = total > 0 ? (sold/total*100).toFixed(0) : 0;
+    const color = mapRateColor(rate);
+    const m = L.circleMarker([lat, lng], {
+      radius: 6, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.95
+    });
+    const addr = (p.detail && p.detail.info && p.detail.info.pjAddress) || p.address || '';
+    const html =
+      `<div style="min-width:160px">`
+      + `<b style="color:${color};font-size:14px">${esc(name)}</b>`
+      + (al ? `<div style="color:#888;font-size:11px">阳光家缘：${esc(p.name)}</div>` : '')
+      + `<div style="margin:4px 0">去化 <b>${rate}%</b> · 售${sold}/未${unsold}</div>`
+      + (addr ? `<div style="color:#666;font-size:11px">${esc(addr)}</div>` : '')
+      + `<div style="margin-top:6px"><a href="#" onclick="openFromMap(${i});return false;">查看销控表 →</a></div>`
+      + `</div>`;
+    m.bindPopup(html);
+    m.bindTooltip(esc(name), {permanent:false, direction:'top', className:'maplabel', opacity:1});
+    MARKERS.addLayer(m);
+    bounds.push([lat, lng]);
+  });
+  // 使用 5%-95% 分位点作为初始视野，避免个别远郊盘把地图拉得太宽
+  if(bounds.length){
+    const pct = (arr, p)=>{
+      const s = arr.slice().sort((a,b)=>a-b);
+      return s[Math.min(s.length-1, Math.max(0, Math.floor(s.length*p)))];
+    };
+    const lats = bounds.map(b=>b[0]);
+    const lngs = bounds.map(b=>b[1]);
+    MAP.fitBounds([[pct(lats,0.05), pct(lngs,0.05)], [pct(lats,0.95), pct(lngs,0.95)]], {padding:[30,30], maxZoom:13});
+  }
+  applyLabels();
+}
+
+function applyLabels(){
+  if(!MAP || !MARKERS) return;
+  MARKERS.eachLayer(m=>{
+    const t = m.getTooltip(); if(!t) return;
+    t.options.permanent = LABELS_ON;
+    if(LABELS_ON) m.openTooltip(); else m.closeTooltip();
+  });
+}
+
+function toggleLabels(){
+  LABELS_ON = !LABELS_ON;
+  document.getElementById('labelToggle').classList.toggle('on', LABELS_ON);
+  applyLabels();
+}
+
+function openFromMap(i){
+  // 切回列表视图并展开对应楼盘
+  document.getElementById('q').value = '';
+  document.getElementById('areaFilter').value = '';
+  showView('list');
+  render();
+  setTimeout(()=>{
+    const fidx = filtered.indexOf(DATA.projects[i]);
+    if(fidx < 0) return;
+    const row = document.querySelector('.row[data-idx="'+fidx+'"]');
+    if(row){ row.classList.add('open'); renderDetail(fidx); row.scrollIntoView({behavior:'smooth', block:'center'}); }
+  }, 80);
 }
 
 // 事件绑定
