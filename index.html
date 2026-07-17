@@ -47,6 +47,8 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .bld .bbody{display:none;padding:8px 10px}
 .bld.open .bbody{display:block}
 .floor{display:flex;align-items:center;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+.bld .more{text-align:center;font-size:12px;color:#1f6feb;padding:6px 0;cursor:pointer;border-top:1px dashed #eee;margin-top:4px}
+.bld .more:active{background:#f0f5ff}
 .floor .fl{font-size:10px;color:#999;width:28px;text-align:right;flex-shrink:0}
 .unit{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:38px;border-radius:4px;font-size:10px;color:#fff;cursor:pointer;position:relative;margin:1px;line-height:1.15;padding:1px 0}
 .unit .un{font-weight:700;font-size:11px}
@@ -302,9 +304,11 @@ function toggleGroup(gi){
 function toggleProj(gi, mi){
   const g = GROUPS[gi];
   const fi = g.idxs[mi];
+  const row = document.querySelector('.subrow[data-fi="'+fi+'"]');
   const subEl = document.getElementById('s'+gi+'_'+mi);
   if(!subEl) return;
-  const open = subEl.classList.toggle('open');
+  // .open 必须加在父级 .subrow 上，CSS 规则 .subrow.open .sdetail 才生效
+  const open = row ? row.classList.toggle('open') : subEl.classList.toggle('open');
   if(open) renderDetail(fi, 's'+gi+'_'+mi);
 }
 
@@ -356,20 +360,7 @@ function renderDetail(idx, targetId){
             </span>
             <span class="cnt">${b.floors.reduce((s,f)=>s+f.units.length,0)}套 · ${b.floors.length}层</span>
           </div>
-          <div class="bbody">
-            ${b.floors.map((f,fi)=>`
-              <div class="floor">
-                <span class="fl">${esc(f.floor)}</span>
-                ${f.units.map((u,ui)=>{
-                  const s=inferStatus(u);
-                  return `<span class="unit" data-s="${s}" onclick="showUnit(${idx},${bi},${fi},${ui})">`
-                    + `<span class="un">${esc(u.unitNum||'')}</span>`
-                    + `<span class="ua">${esc(fmtArea(u.totalArea))}㎡</span>`
-                    + `</span>`;
-                }).join('')}
-              </div>
-            `).join('')}
-          </div>
+          <div class="bbody" id="bb${idx}_${bi}"></div>
         </div>
       `).join('')}
     </div>
@@ -378,9 +369,54 @@ function renderDetail(idx, targetId){
   if(blds.length>0) toggleBld(idx,0);
 }
 
+// 楼栋内单元按需懒加载；超大楼栋按楼层分页，避免一次性渲染数万 DOM 节点导致卡死
+const FLOOR_PAGE = 22;
+
+function floorsHTML(b, idx, bi, start){
+  const end = Math.min(start + FLOOR_PAGE, b.floors.length);
+  let h = '';
+  for(let fi=start; fi<end; fi++){
+    const f = b.floors[fi];
+    h += '<div class="floor"><span class="fl">'+esc(f.floor)+'</span>'
+       + f.units.map((u,ui)=>{
+           const s = inferStatus(u);
+           return '<span class="unit" data-s="'+s+'" onclick="showUnit('+idx+','+bi+','+fi+','+ui+')">'
+             + '<span class="un">'+esc(u.unitNum||'')+'</span>'
+             + '<span class="ua">'+esc(fmtArea(u.totalArea))+'㎡</span>'
+             + '</span>';
+         }).join('')
+       + '</div>';
+  }
+  const left = b.floors.length - end;
+  if(left > 0){
+    h += '<div class="more" onclick="loadMoreFloors('+idx+','+bi+','+end+')">展开更多楼层（剩余 '+left+' 层）▾</div>';
+  }
+  return h;
+}
+
+function renderBldBody(b, idx, bi){
+  return floorsHTML(b, idx, bi, 0);
+}
+
+function loadMoreFloors(idx, bi, start){
+  const b = filtered[idx] && filtered[idx].detail && filtered[idx].detail.buildings[bi];
+  const body = document.getElementById('bb'+idx+'_'+bi);
+  if(!b || !body) return;
+  const more = floorsHTML(b, idx, bi, start);
+  const btn = body.querySelector('.more');
+  if(btn) btn.outerHTML = more; else body.insertAdjacentHTML('beforeend', more);
+}
+
 function toggleBld(idx,bi){
-  const el = document.getElementById('b'+idx+'_'+bi);
-  if(el) el.classList.toggle('open');
+  const wrap = document.getElementById('b'+idx+'_'+bi);
+  if(!wrap) return;
+  const open = wrap.classList.toggle('open');
+  const body = document.getElementById('bb'+idx+'_'+bi);
+  if(open && body && !body.dataset.loaded){
+    const b = filtered[idx] && filtered[idx].detail && filtered[idx].detail.buildings[bi];
+    if(b) body.innerHTML = renderBldBody(b, idx, bi);
+    body.dataset.loaded = '1';
+  }
 }
 
 function esc(s){
