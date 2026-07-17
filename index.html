@@ -77,6 +77,16 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .bbn{font-size:10px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 .infobn{color:#1565c0;font-weight:600}
 .src{font-size:10px;color:#aaa;font-weight:400}
+.subrow{border-top:1px solid #f0f0f0}
+.subrow .shead{display:flex;align-items:center;gap:8px;padding:10px 14px 10px 26px;cursor:pointer;background:#fafbfc}
+.subrow .shead:active{background:#f0f3f8}
+.subrow .sname{font-size:13px;flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.subrow .snums{font-size:11px;color:#e8590c;font-weight:700;white-space:nowrap}
+.subrow .sarrow{color:#bbb;font-size:11px;transition:transform .2s}
+.subrow.open .sarrow{transform:rotate(90deg)}
+.subrow .sdetail{display:none;padding:0 14px 10px 26px}
+.subrow.open .sdetail{display:block}
+.subrow .detail{padding:0}
 .seg{display:inline-flex;border:1px solid #d9d9d9;border-radius:6px;overflow:hidden}
 .seg button{border:none;background:#fff;padding:6px 12px;font-size:13px;cursor:pointer;color:#555}
 .seg button.on{background:#1f6feb;color:#fff}
@@ -113,6 +123,7 @@ body.map #map{display:block}
 <script>
 let DATA = null;
 let filtered = [];
+let GROUPS = [];
 let ALIASES = {};
 let ALIAS_KEYS = [];
 
@@ -174,6 +185,56 @@ function buildAreaFilter(){
   });
 }
 
+function devPrefix(name){
+  if(!name) return name;
+  let n = name;
+  n = n.replace(/[（(][^）)]*[）)]/g, '').trim();          // 去括号内
+  n = n.replace(/自编号[:：][^\s]*/, '')                    // 自编号：6#
+       .replace(/自编[^\s]*/, '')                           // 自编4栋
+       .replace(/住宅楼.*$/, '')
+       .replace(/住宅.*$/, '')                             // 住宅（兜底）
+       .replace(/商业.*$/, '')
+       .replace(/、.*$/, '')
+       .trim();
+  n = n.replace(/\s*[0-9]+[栋号楼]*.*$/, '')                // 末尾 18 栋 / 11 / 1栋
+       .replace(/[0-9]+号楼.*$/, '')
+       .trim();
+  n = n.replace(/[.\s]+$/, '');
+  return n ? n : name;
+}
+
+function projStats(p){
+  const sum = (p.detail && p.detail.summary) || {};
+  const sold = sum.totalSaleNum || 0;
+  const unsold = sum.totalNosoldNum || 0;
+  const total = sum.allowPresellNum || (sold+unsold) || 0;
+  return {sold, unsold, total, rate: total>0 ? (sold/total*100).toFixed(1) : '0.0'};
+}
+
+function buildGroups(list){
+  const map = {};
+  list.forEach((p, i)=>{
+    const key = devPrefix(p.name);
+    if(!map[key]) map[key] = {prefix:key, members:[], idxs:[], area:p.area||''};
+    map[key].members.push(p);
+    map[key].idxs.push(i);
+    if(!map[key].area && p.area) map[key].area = p.area;
+  });
+  return Object.keys(map).sort().map(k=>{
+    const g = map[k];
+    const al = aliasOf(g.prefix);
+    let sold=0, unsold=0, total=0;
+    g.members.forEach(p=>{
+      const s = projStats(p);
+      sold+=s.sold; unsold+=s.unsold; total+=s.total;
+    });
+    g.alias = al;
+    g.sold=sold; g.unsold=unsold; g.total=total;
+    g.rate = total>0 ? (sold/total*100).toFixed(1) : '0.0';
+    return g;
+  });
+}
+
 function render(){
   const q = document.getElementById('q').value.trim().toLowerCase();
   const af = document.getElementById('areaFilter').value;
@@ -186,49 +247,68 @@ function render(){
     }
     return true;
   });
+  GROUPS = buildGroups(filtered);
   const el = document.getElementById('list');
-  if(filtered.length===0){
+  if(GROUPS.length===0){
     el.innerHTML = '<div class="empty">没有匹配的楼盘</div>';
     return;
   }
-  el.innerHTML = filtered.map((p,idx)=>{
-    const d = p.detail;
-    const sum = d && d.summary ? d.summary : {};
-    const sold = sum.totalSaleNum || 0;
-    const unsold = sum.totalNosoldNum || 0;
-    const total = sum.allowPresellNum || (sold+unsold) || 0;
-    const rate = total>0 ? (sold/total*100).toFixed(1) : '0.0';
-    const al = aliasOf(p.name);
-    const showName = al ? al.alias : p.name;
-    const isAlias = !!al;
-    return `<div class="row" data-idx="${idx}">
-      <div class="head" onclick="toggleRow(${idx})">
-        <span class="namewrap">
-          <span class="name${isAlias?' alias':''}">${esc(showName)}${isAlias?'<span class="tag">推广</span>':''}</span>
-          ${isAlias?`<span class="nsub">阳光家缘：${esc(p.name)}</span>`:''}
-        </span>
-        <span class="area">${esc(p.area||'')}</span>
-        <span class="rate">${rate}%</span>
-        <span class="nums">售${sold}/未${unsold}</span>
-        <span class="arrow">▶</span>
-      </div>
-      <div class="detail" id="d${idx}"></div>
-    </div>`;
-  }).join('');
+  el.innerHTML = GROUPS.map((g,gi)=>renderGroupRow(g,gi)).join('');
 }
 
-function toggleRow(idx){
-  const row = document.querySelector(`.row[data-idx="${idx}"]`);
+function renderGroupRow(g, gi){
+  const title = g.alias ? g.alias.alias : g.prefix;
+  const isAlias = !!g.alias;
+  return `<div class="row group" data-gi="${gi}">
+    <div class="head" onclick="toggleGroup(${gi})">
+      <span class="namewrap">
+        <span class="name${isAlias?' alias':''}">${esc(title)}${isAlias?'<span class="tag">推广</span>':''}</span>
+        ${isAlias?`<span class="nsub">阳光家缘：${esc(g.prefix)}</span>`:''}
+        ${g.members.length>1?`<span class="nsub">${g.members.length} 个预售证/楼栋</span>`:''}
+      </span>
+      <span class="area">${esc(g.area||'')}</span>
+      <span class="rate">${g.rate}%</span>
+      <span class="nums">售${g.sold}/未${g.unsold}</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="detail" id="g${gi}"></div>
+  </div>`;
+}
+
+function toggleGroup(gi){
+  const g = GROUPS[gi];
+  const row = document.querySelector(`.row.group[data-gi="${gi}"]`);
   if(!row) return;
   const open = row.classList.toggle('open');
+  const el = document.getElementById('g'+gi);
   if(open){
-    renderDetail(idx);
+    el.innerHTML = g.members.map((p,mi)=>{
+      const fi = g.idxs[mi];
+      const st = projStats(p);
+      return `<div class="subrow" data-fi="${fi}">
+        <div class="shead" onclick="toggleProj(${gi},${mi})">
+          <span class="sname">${esc(p.name)}</span>
+          <span class="snums">${st.rate}%</span>
+          <span class="sarrow">▶</span>
+        </div>
+        <div class="sdetail" id="s${gi}_${mi}"></div>
+      </div>`;
+    }).join('');
   }
 }
 
-function renderDetail(idx){
+function toggleProj(gi, mi){
+  const g = GROUPS[gi];
+  const fi = g.idxs[mi];
+  const subEl = document.getElementById('s'+gi+'_'+mi);
+  if(!subEl) return;
+  const open = subEl.classList.toggle('open');
+  if(open) renderDetail(fi, 's'+gi+'_'+mi);
+}
+
+function renderDetail(idx, targetId){
   const p = filtered[idx];
-  const el = document.getElementById('d'+idx);
+  const el = document.getElementById(targetId || ('d'+idx));
   const d = p.detail;
   const al = aliasOf(p.name);
   if(!d){
@@ -390,37 +470,32 @@ function initMap(){
 function rebuildMarkers(){
   if(!MAP || !MARKERS) return;
   MARKERS.clearLayers();
+  const groups = buildGroups(DATA.projects);
   const bounds = [];
-  DATA.projects.forEach((p, i)=>{
-    const lat = p.lat, lng = p.lng;
-    if(!lat || !lng) return;
-    const al = aliasOf(p.name);
-    const name = al ? al.alias : p.name;
-    const d = p.detail || {};
-    const sum = d.summary || {};
-    const sold = sum.totalSaleNum || 0;
-    const unsold = sum.totalNosoldNum || 0;
-    const total = sum.allowPresellNum || (sold + unsold) || 0;
-    const rate = total > 0 ? (sold/total*100).toFixed(0) : 0;
-    const color = mapRateColor(rate);
+  groups.forEach((g)=>{
+    const pts = g.members.map(p=>[p.lat, p.lng]).filter(x=>x[0] && x[1]);
+    if(!pts.length) return;
+    const lat = pts.reduce((s,x)=>s+x[0],0)/pts.length;
+    const lng = pts.reduce((s,x)=>s+x[1],0)/pts.length;
+    const title = g.alias ? g.alias.alias : g.prefix;
+    const color = mapRateColor(g.rate);
     const m = L.circleMarker([lat, lng], {
-      radius: 6, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.95
+      radius: 7, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.95
     });
-    const addr = (p.detail && p.detail.info && p.detail.info.pjAddress) || p.address || '';
     const html =
       `<div style="min-width:160px">`
-      + `<b style="color:${color};font-size:14px">${esc(name)}</b>`
-      + (al ? `<div style="color:#888;font-size:11px">阳光家缘：${esc(p.name)}</div>` : '')
-      + `<div style="margin:4px 0">去化 <b>${rate}%</b> · 售${sold}/未${unsold}</div>`
-      + (addr ? `<div style="color:#666;font-size:11px">${esc(addr)}</div>` : '')
-      + `<div style="margin-top:6px"><a href="#" onclick="openFromMap(${i});return false;">查看销控表 →</a></div>`
+      + `<b style="color:${color};font-size:14px">${esc(title)}</b>`
+      + (g.alias ? `<div style="color:#888;font-size:11px">阳光家缘：${esc(g.prefix)}</div>` : '')
+      + `<div style="margin:4px 0">去化 <b>${g.rate}%</b> · 售${g.sold}/未${g.unsold}</div>`
+      + `<div style="color:#666;font-size:11px">${g.members.length} 个预售证/楼栋</div>`
+      + `<div style="margin-top:6px"><a href="#" onclick="openGroupFromMap('${esc(g.prefix)}');return false;">查看销控表 →</a></div>`
       + `</div>`;
     m.bindPopup(html);
-    m.bindTooltip(esc(name), {permanent:false, direction:'top', className:'maplabel', opacity:1});
+    m.bindTooltip(esc(title), {permanent:false, direction:'top', className:'maplabel', opacity:1});
+    m._gprefix = g.prefix;
     MARKERS.addLayer(m);
     bounds.push([lat, lng]);
   });
-  // 使用 5%-95% 分位点作为初始视野，避免个别远郊盘把地图拉得太宽
   if(bounds.length){
     const pct = (arr, p)=>{
       const s = arr.slice().sort((a,b)=>a-b);
@@ -448,17 +523,20 @@ function toggleLabels(){
   applyLabels();
 }
 
-function openFromMap(i){
-  // 切回列表视图并展开对应楼盘
+function openGroupFromMap(prefix){
+  // 切回列表视图并展开对应小区
   document.getElementById('q').value = '';
   document.getElementById('areaFilter').value = '';
   showView('list');
   render();
   setTimeout(()=>{
-    const fidx = filtered.indexOf(DATA.projects[i]);
-    if(fidx < 0) return;
-    const row = document.querySelector('.row[data-idx="'+fidx+'"]');
-    if(row){ row.classList.add('open'); renderDetail(fidx); row.scrollIntoView({behavior:'smooth', block:'center'}); }
+    const gi = GROUPS.findIndex(g=>g.prefix===prefix);
+    if(gi < 0) return;
+    const row = document.querySelector(`.row.group[data-gi="${gi}"]`);
+    if(row){
+      if(!row.classList.contains('open')) toggleGroup(gi);
+      row.scrollIntoView({behavior:'smooth', block:'center'});
+    }
   }, 80);
 }
 
