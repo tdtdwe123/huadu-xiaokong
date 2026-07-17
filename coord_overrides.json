@@ -1,0 +1,8 @@
+{
+  "_comment": "手工坐标覆盖：key 为 project id 或 name，优先级高于一切自动 geocode。用于存放已核实的精确坐标。示例见下。",
+  "_example_placeholder": {
+    "lng": 113.12345,
+    "lat": 23.12345,
+    "note": "来源说明，如 高德/百度/实地"
+  }
+}
