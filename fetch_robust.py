@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """增量抓取：每抓一个就保存，支持断点续抓"""
-import json, time, urllib.request, urllib.parse, os, re, sys
+import json, time, urllib.request, urllib.parse, os, re, sys, threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 GOV_BASE = "https://zfcj.gz.gov.cn"
 HEADERS = {
@@ -15,7 +16,7 @@ OUTPUT_FILE = os.path.join(BASE, "data.json")
 PROGRESS_FILE = os.path.join(BASE, "data_progress.json")
 
 
-def gov_get(path, params, retries=3, timeout=30):
+def gov_get(path, params, retries=2, timeout=12):
     url = GOV_BASE + path + "?" + urllib.parse.urlencode(params)
     last = None
     for i in range(retries):
@@ -121,16 +122,16 @@ def main():
 
     amap_key = os.environ.get("AMAP_KEY")
 
-    for i, p in enumerate(projects):
+    lock = threading.Lock()
+    save_counter = [0]
+
+    def fetch_one(i, p):
         pid = p["id"]
-        if pid in results:
-            continue
         try:
             detail = fetch_project(pid)
         except Exception as e:
-            print(f"[{i+1}/{total}] {p['name']} 失败: {e}", flush=True)
             detail = None
-        results[pid] = {
+        r = {
             "id": pid, "name": p["name"], "developer": p.get("developer"),
             "presell": p.get("presell"), "address": p.get("address"),
             "area": p.get("area"),
@@ -138,12 +139,25 @@ def main():
             "geo_approx": p.get("geo_approx"), "geo_src": None,
             "detail": detail,
         }
-        ok = sum(1 for v in results.values() if v.get("detail"))
-        print(f"[{i+1}/{total}] {p['name']} {'OK' if detail else 'FAIL'} (成功{ok})", flush=True)
+        with lock:
+            results[pid] = r
+            save_counter[0] += 1
+            ok = sum(1 for v in results.values() if v.get("detail"))
+            print(f"[{i+1}/{total}] {p['name']} {'OK' if detail else 'FAIL'} (成功{ok})", flush=True)
+            # 每完成 10 个或最后一个时保存进度，减少 IO
+            if save_counter[0] % 10 == 0 or save_counter[0] == len(projects):
+                with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
+                    json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
+        return pid
 
-        # 每抓一个就保存进度
-        with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
-            json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
+    todo = [p for p in projects if p["id"] not in results]
+    print(f"并发抓取 {len(todo)} 个楼盘（8 线程）…", flush=True)
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        list(ex.map(lambda args: fetch_one(*args), enumerate(todo)))
+
+    # 最终保存一次进度
+    with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
 
     # 坐标修正优先级：高德实时 geocode > 线上已有坐标 > projects.json 原始坐标
     for p in projects:
@@ -170,7 +184,24 @@ def main():
         r["geo_approx"] = approx
         r["geo_src"] = src
 
-        time.sleep(0.6)
+    # 统计本次真正抓取成功的数量（未使用旧数据回填）
+    fresh_ok = sum(1 for v in results.values() if v.get("detail") is not None)
+
+    # 合并旧数据：本次抓取失败的项目保留 data.json 中的 detail，避免海外/不稳定网络把数据刷空
+    old_details = {}
+    if os.path.exists(OUTPUT_FILE):
+        try:
+            old = json.load(open(OUTPUT_FILE, encoding="utf-8"))
+            for op in old.get("projects", []):
+                if op.get("detail"):
+                    old_details[op["id"]] = op["detail"]
+        except Exception:
+            pass
+    restored = 0
+    for pid in results:
+        if results[pid].get("detail") is None and pid in old_details:
+            results[pid]["detail"] = old_details[pid]
+            restored += 1
 
     # 生成最终 data.json
     out = {
@@ -180,8 +211,20 @@ def main():
     }
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-    ok = sum(1 for v in results.values() if v.get("detail"))
-    print(f"\n完成：{ok}/{total} 成功，写入 {OUTPUT_FILE}", flush=True)
+
+    # progress 只保留本次真正抓取成功的项目，失败项下次重试
+    for pid in list(results.keys()):
+        if results[pid].get("detail") is None:
+            del results[pid]
+    with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
+
+    # 写入状态文件，供 CI/Actions 判断是否提交
+    status = {"fresh_ok": fresh_ok, "restored": restored, "total": total, "updated": out["updated"]}
+    with open(os.path.join(BASE, "fetch_status.json"), "w", encoding="utf-8") as f:
+        json.dump(status, f, ensure_ascii=False)
+
+    print(f"\n完成：{fresh_ok}/{total} 本次新鲜抓取，{restored} 个从旧数据恢复，写入 {OUTPUT_FILE}", flush=True)
 
 
 if __name__ == "__main__":
