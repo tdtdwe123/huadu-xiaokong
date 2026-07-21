@@ -16,7 +16,7 @@ OUTPUT_FILE = os.path.join(BASE, "data.json")
 PROGRESS_FILE = os.path.join(BASE, "data_progress.json")
 
 
-def gov_get(path, params, retries=2, timeout=12):
+def gov_get(path, params, retries=3, timeout=20):
     url = GOV_BASE + path + "?" + urllib.parse.urlencode(params)
     last = None
     for i in range(retries):
@@ -151,8 +151,8 @@ def main():
         return pid
 
     todo = [p for p in projects if p["id"] not in results]
-    print(f"并发抓取 {len(todo)} 个楼盘（8 线程）…", flush=True)
-    with ThreadPoolExecutor(max_workers=8) as ex:
+    print(f"并发抓取 {len(todo)} 个楼盘（3 线程）…", flush=True)
+    with ThreadPoolExecutor(max_workers=3) as ex:
         list(ex.map(lambda args: fetch_one(*args), enumerate(todo)))
 
     # 最终保存一次进度
@@ -187,37 +187,52 @@ def main():
     # 统计本次真正抓取成功的数量（未使用旧数据回填）
     fresh_ok = sum(1 for v in results.values() if v.get("detail") is not None)
 
-    # 合并旧数据：本次抓取失败的项目保留 data.json 中的 detail，避免海外/不稳定网络把数据刷空
-    old_details = {}
-    if os.path.exists(OUTPUT_FILE):
-        try:
-            old = json.load(open(OUTPUT_FILE, encoding="utf-8"))
-            for op in old.get("projects", []):
-                if op.get("detail"):
-                    old_details[op["id"]] = op["detail"]
-        except Exception:
-            pass
-    restored = 0
-    for pid in results:
-        if results[pid].get("detail") is None and pid in old_details:
-            results[pid]["detail"] = old_details[pid]
-            restored += 1
-
-    # 生成最终 data.json
-    out = {
-        "updated": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "count": total,
-        "projects": [results[p["id"]] for p in projects if p["id"] in results],
-    }
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
-
     # progress 只保留本次真正抓取成功的项目，失败项下次重试
     for pid in list(results.keys()):
         if results[pid].get("detail") is None:
             del results[pid]
     with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
+
+    # 合并旧数据：本次抓取失败的项目保留旧 data.json 中的完整记录，避免海外/不稳定网络把数据刷空
+    old_projects = {}
+    if os.path.exists(OUTPUT_FILE):
+        try:
+            old = json.load(open(OUTPUT_FILE, encoding="utf-8"))
+            for op in old.get("projects", []):
+                if op.get("detail"):
+                    old_projects[op["id"]] = op
+        except Exception:
+            pass
+
+    # 为生成 data.json 创建合并视图（不污染 progress）
+    merged = {}
+    restored = 0
+    for pid, r in results.items():
+        merged[pid] = r.copy()
+    for p in projects:
+        pid = p["id"]
+        if pid in merged:
+            continue
+        if pid in old_projects:
+            merged[pid] = old_projects[pid]
+            restored += 1
+        else:
+            merged[pid] = {
+                "id": pid, "name": p["name"], "developer": p.get("developer"),
+                "presell": p.get("presell"), "address": p.get("address"),
+                "area": p.get("area"), "lng": p.get("lng"), "lat": p.get("lat"),
+                "geo_approx": p.get("geo_approx"), "geo_src": None, "detail": None,
+            }
+
+    # 生成最终 data.json
+    out = {
+        "updated": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "count": total,
+        "projects": [merged[p["id"]] for p in projects if p["id"] in merged],
+    }
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
 
     # 写入状态文件，供 CI/Actions 判断是否提交
     status = {"fresh_ok": fresh_ok, "restored": restored, "total": total, "updated": out["updated"]}
