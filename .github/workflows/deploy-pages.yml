@@ -1,0 +1,37 @@
+name: Deploy Pages
+
+# 数据抓取工作流（fetch.yml）每次向 main 推送 data.json 都会触发本工作流，
+# 用官方 actions/deploy-pages 可靠地重建并部署站点，避免分支型 Pages 自动构建被合并/限流而长期不更新。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 允许一个并发部署，不要取消进行中的运行
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出
+        uses: actions/checkout@v4
+
+      - name: 上传站点产物（整个仓库根目录即站点）
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -27,7 +27,10 @@ FILES = [
     "index.html", "aliases.json",
 ]
 # 工作流文件：需要 token 具备 workflow 权限；失败则跳过并提示
-WORKFLOW = ".github/workflows/fetch.yml"
+WORKFLOWS = [
+    ".github/workflows/fetch.yml",
+    ".github/workflows/deploy-pages.yml",
+]
 
 
 def run(cmd, cwd=None, check=True):
@@ -60,13 +63,14 @@ def main():
         print(f"  ✓ {f}")
 
     # 工作流（需要 workflow 权限）
-    wf_src = os.path.join(BASE, WORKFLOW)
-    if os.path.exists(wf_src):
-        try:
-            shutil.copy2(wf_src, os.path.join(tmp, WORKFLOW))
-            print(f"  ✓ {WORKFLOW}")
-        except Exception as e:
-            print(f"  ! 工作流复制失败（可能需 workflow 权限）: {e}")
+    for wf in WORKFLOWS:
+        wf_src = os.path.join(BASE, wf)
+        if os.path.exists(wf_src):
+            try:
+                shutil.copy2(wf_src, os.path.join(tmp, wf))
+                print(f"  ✓ {wf}")
+            except Exception as e:
+                print(f"  ! 工作流复制失败（可能需 workflow 权限）: {wf} {e}")
 
     print("[3/4] 提交变更…")
     run(["git", "add", "-A"], cwd=tmp)
