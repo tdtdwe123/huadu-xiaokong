@@ -28,19 +28,26 @@ jobs:
       - name: 差分快速抓取（仅对变动/缺失楼盘完整抓取，接口量从~1971降至~657+少量）
         run: python3 fetch_fast.py
 
-      - name: 提交并推送（仅当数据变动且抓取完整）
+      - name: 聚类统一板块（按"核心楼盘名+开发商"归并预售证，杜绝同一楼盘被拆到不同板块）
+        run: python3 fix_grouping.py
+
+      - name: 提交并推送（抓取完整 + 文件有变化才提交）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          changed=$(python3 -c "import json; print(json.load(open('fetch_status.json')).get('changed', False))")
           sok=$(python3 -c "import json; print(json.load(open('fetch_status.json')).get('summary_ok', 0))")
-          echo "changed=$changed summary_ok=$sok"
-          # 双保险：有变动 + 摘要抓取足够完整（>=500/657），才推送，避免网络抖动时推送降级数据
-          if [ "$changed" = "True" ] && [ "$sok" -ge 500 ]; then
-            git add data.json fetch_status.json projects.json
-            git commit -m "自动更新销控数据 $(date -u '+%Y-%m-%d %H:%M') UTC"
+          echo "summary_ok=$sok"
+          # 抓取足够完整（>=500/657）才允许推送，避免网络抖动时推送降级数据
+          if [ "$sok" -lt 500 ]; then
+            echo "抓取不完整（summary_ok<$sok），跳过提交"
+            exit 0
+          fi
+          git add data.json fetch_status.json projects.json fix_grouping.py
+          # 仅当文件确有变化才提交（fix_grouping 幂等：无变化则不产生 diff）
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "自动更新销控数据 + 聚类统一板块 $(date -u '+%Y-%m-%d %H:%M') UTC"
             git push
             echo "已推送变动数据"
           else
-            echo "无变动或抓取不完整，跳过提交"
+            echo "无变动，跳过提交"
           fi

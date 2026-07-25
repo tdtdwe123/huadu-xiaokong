@@ -218,11 +218,16 @@ function projStats(p){
 function buildGroups(list){
   const map = {};
   list.forEach((p, i)=>{
-    const key = devPrefix(p.name);
-    if(!map[key]) map[key] = {prefix:key, members:[], idxs:[], area:p.area||''};
+    // 优先用服务器聚类键 group（fix_grouping.py 写入），与板块归属两端一致；
+    // 缺省时回退到 devPrefix 纯名称分组，保证旧数据也能正常显示。
+    const key = (p.group && String(p.group).indexOf('|') > 0) ? p.group
+              : (devPrefix(p.name) || p.name);
+    const prefix = p.core || devPrefix(p.name) || p.name;
+    if(!map[key]) map[key] = {prefix:prefix, members:[], idxs:[], areas:{}};
     map[key].members.push(p);
     map[key].idxs.push(i);
-    if(!map[key].area && p.area) map[key].area = p.area;
+    const a = p.area || '';
+    if(a) map[key].areas[a] = (map[key].areas[a] || 0) + 1;
   });
   return Object.keys(map).sort().map(k=>{
     const g = map[k];
@@ -232,6 +237,10 @@ function buildGroups(list){
       const s = projStats(p);
       sold+=s.sold; unsold+=s.unsold; total+=s.total;
     });
+    // 组内板块取多数票（fix_grouping 已统一，正常为单一值；此处兜底防异常）
+    let area = '', maxc = -1;
+    for(const a in g.areas){ if(g.areas[a] > maxc){ maxc = g.areas[a]; area = a; } }
+    g.area = area;
     g.alias = al;
     g.sold=sold; g.unsold=unsold; g.total=total;
     g.rate = total>0 ? (sold/total*100).toFixed(1) : '0.0';

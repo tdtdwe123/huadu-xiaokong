@@ -3,13 +3,20 @@
 """按"核心楼盘名 + 开发商"聚类，统一一个街道(板块)与坐标给整组。
 
 修复同一个物理楼盘被多个预售证拆到不同板块的 bug（例如凤凰瑞景花园
-被分到花城街/区府板块/空 area 三处）。
-- 仅改 area/lng/lat/geo_approx/geo_src，不动 detail（保留真实房号）。
+被分到花城街/区府板块/空 area 三处；臻悦府被分到区府板块/新雅街）。
+
+关键设计：
+- 服务器聚类键 = py_base(name) + "|" + norm_dev(developer)，与前端
+  index.html 的 devPrefix 对齐，保证"显示分组"和"板块归属"两端一致。
+- py_base 与前端 devPrefix 逻辑等价（含 自编/自编号/住宅/商业/公配/
+  数字栋号 等后缀剥离），避免"前端并成一组、后端拆成多组"的错位。
+- norm_dev 把"广州市天邑湖...,广州融都..."这类联合开发商串归一为
+  在项目中实际出现最多的那个独立开发商，避免联合开发盘被孤立成单成员组。
+- 仅改 area/lng/lat/geo_approx/geo_src/core/group，不动 detail（保留真实房号）。
 - 当地址里没有显式街道名时，按"组内多数非空街道"→"同开发商其它项目的
-  最常见街道"→留空  顺序兜底，保证 凤凰瑞景 这种 4/5 写明花城街的组
-  统一归到花城街。
+  最常见街道"→留空 顺序兜底。
 """
-import json, os, re, sys, hashlib
+import json, os, re, sys
 from collections import defaultdict, Counter
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -22,27 +29,54 @@ detect_town = BP.detect_town
 jitter = BP.jitter
 DEFAULT_CENTROID = BP.DEFAULT_CENTROID
 
+DEV_SPLIT = re.compile(r"[，,、/]")
+
 
 def py_base(name):
-    """把 阳光家缘 返回的‘楼盘名+预售证/楼栋/期数/工程部位’剥离成物理楼盘核心名。"""
-    n = name or ""
+    """把 阳光家缘 返回的‘楼盘名+预售证/楼栋/期数/工程部位’剥离成物理楼盘核心名。
+    逻辑与前端 index.html 的 devPrefix 对齐，保证两端聚类一致。"""
+    if not name:
+        return name
+    n = name
     # （...）／(...) 全部剥除（含跨括号的内容）
-    n = re.sub(r"[（(][^）)]*[）)].*$", "", n)
-    # 工程部位/业态作为名后缀去掉（"住宅楼"、"住宅"、"地下室"、"垃圾收集站"、"商业"等）
-    n = re.sub(r"(住宅楼|住宅|公租房|公配|地下室|垃圾收集站|配电房|岗亭|商业)[（(（].*$", "", n)
-    n = re.sub(r"(住宅楼|住宅|地下室|垃圾收集站|配电房|岗亭|商业)$", "", n)
-    n = re.sub(r"及垃圾收集站.*$", "", n)
-    n = re.sub(r"及商业.*$", "", n)
-    n = re.sub(r"及地下室.*$", "", n)
-    n = re.sub(r"、地下室.*$", "", n)
-    n = re.sub(r"、.*$", "", n)
-    # 自编号段
-    n = re.sub(r"自编号.*$", "", n)
-    # 数字+# 栋 号楼 等尾巴
-    n = re.sub(r"[\s\-]*[\d]+[#栋号]?楼?.*$", "", n)
-    n = re.sub(r"[A-Za-z]?\d.*$", "", n)
-    n = re.sub(r"[。。.、，,\s]+$", "", n)
+    n = re.sub(r"[（(][^）)]*[）)].*$", "", n).strip()
+    n = re.sub(r"自编号[:：][^\s]*", "", n)        # 自编号：6#
+    n = re.sub(r"自编[^\s]*", "", n)              # 自编4栋 / 自编4-5栋
+    n = re.sub(r"住宅楼.*$", "", n)               # 住宅楼（...）
+    n = re.sub(r"住宅.*$", "", n)                 # 住宅（兜底）
+    n = re.sub(r"商业.*$", "", n)                 # 商业（...）及商业
+    n = re.sub(r"公配楼.*$", "", n)               # 公配楼
+    n = re.sub(r"公配.*$", "", n)                 # 公配（兜底）
+    n = re.sub(r"、.*$", "", n)                   # 顿号后（自编号5#、垃圾收集站...）
+    n = n.strip()
+    n = re.sub(r"\s*[0-9]+[栋号楼]*.*$", "", n)   # 末尾 18 栋 / 11 / 1栋 / 8-9栋
+    n = re.sub(r"[0-9]+号楼.*$", "", n)
+    n = n.strip()
+    n = re.sub(r"[.\s]+$", "", n)
     return n.strip() or (name or "").strip()
+
+
+def norm_dev(dev, standalone_counter=None):
+    """归一化开发商：把联合开发商串 'A，B' 归并为在项目中实际出现最多的独立开发商。
+
+    阳光家缘常把联合开发盘的开发商标成 '天邑湖...,融都...'，若不归一会被
+    孤立成单成员组、无法与同楼盘其它预售证并组。这里优先选在 projects.json
+    中作为独立开发商出现次数最多的成分；都没有则取最后一个成分。
+    """
+    if not dev:
+        return ""
+    d = dev.strip()
+    if standalone_counter is None:
+        return d
+    parts = [p.strip() for p in DEV_SPLIT.split(d) if p.strip()]
+    if len(parts) <= 1:
+        return d
+    best, bestc = None, -1
+    for p in parts:
+        c = standalone_counter.get(p, 0)
+        if c > bestc:
+            bestc, best = c, p
+    return best if best else parts[-1]
 
 
 def detect_town_safe(addr):
@@ -53,7 +87,6 @@ def detect_town_safe(addr):
     if t:
         return t
     a = addr or ""
-    # 优先 remap
     for k, v in BP.TOWN_REMAP.items():
         if k in a:
             return v
@@ -63,24 +96,31 @@ def detect_town_safe(addr):
     return ""
 
 
-def developer_area_hint(developer):
-    """若 developer's projects 中大多数带某个街道/镇，作为该组的兜底街道。"""
-    if not developer:
-        return ""
-    projs = json.load(open(os.path.join(BASE, "projects.json"), encoding="utf-8"))
+def build_standalone_dev_counter(projs):
+    """统计每个‘独立开发商’（不含联合串）在项目中出现的次数，供 norm_dev 选主开发商。"""
     cnt = Counter()
     for p in projs:
-        if (p.get("developer") or "").strip() == developer.strip():
+        d = (p.get("developer") or "").strip()
+        if not d:
+            continue
+        if len(DEV_SPLIT.split(d)) == 1:
+            cnt[d] += 1
+    return cnt
+
+
+def developer_area_hint(dev, projs):
+    """若 developer's projects 中大多数带某个街道/镇，作为该组的兜底街道。"""
+    if not dev:
+        return ""
+    cnt = Counter()
+    for p in projs:
+        if (p.get("developer") or "").strip() == dev:
             a = p.get("area") or ""
             if a:
                 cnt[a] += 1
     if cnt:
         return cnt.most_common(1)[0][0]
     return ""
-
-
-def group_key(p):
-    return (py_base(p.get("name") or ""), (p.get("developer") or "").strip())
 
 
 def main():
@@ -91,9 +131,12 @@ def main():
     data_projs = data.get("projects", [])
     by_id = {p["id"]: p for p in data_projs}
 
+    standalone = build_standalone_dev_counter(projs)
+
     groups = defaultdict(list)
     for p in projs:
-        groups[group_key(p)].append(p)
+        key = (py_base(p.get("name") or ""), norm_dev(p.get("developer"), standalone))
+        groups[key].append(p)
 
     fixed_areas = 0
     fixed_coords = 0
@@ -105,7 +148,7 @@ def main():
         # 候选街道 (a) 成员地址里抽 (b) 同开发商兜底
         towns = [detect_town_safe(m.get("address") or "") for m in members]
         town_candidates = [t for t in towns if t]
-        hint = developer_area_hint(dev) if len(town_candidates) < len(members) else ""
+        hint = developer_area_hint(dev, projs) if len(town_candidates) < len(members) else ""
 
         if town_candidates:
             town = Counter(town_candidates).most_common(1)[0][0]
@@ -117,13 +160,14 @@ def main():
         gkey = base + "|" + dev
         jlng, jlat = jitter(gkey, clng, clat)
 
-        # 是否包含有精确坐标的成员（保留此成员的 coords，其余仍然用组的近似）
         precise = [m for m in members if m.get("lng") and m.get("lat") and not m.get("geo_approx")]
 
         for m in members:
             if m.get("area") != town:
                 fixed_areas += 1
             m["area"] = town
+            m["core"] = base
+            m["group"] = gkey
             # 若本成员已有精确坐标 → 保留；否则统一为组的近似坐标
             if m.get("lng") and m.get("lat") and not m.get("geo_approx"):
                 continue
@@ -133,7 +177,7 @@ def main():
             m["geo_src"] = "town_centroid_group"
             fixed_coords += 1
 
-    # data.json 同步：area 永远同步；lng/lat/geo_* 只在不是精确坐标时同步
+    # data.json 同步：area 永远同步；core/group 永远同步；lng/lat/geo_* 只在不是精确坐标时同步
     synced = 0
     inserted = 0
     for p in projs:
@@ -145,6 +189,7 @@ def main():
                 "presell": p.get("presell"),
                 "address": p.get("address"),
                 "area": p.get("area"),
+                "core": p.get("core"), "group": p.get("group"),
                 "lng": p.get("lng"), "lat": p.get("lat"),
                 "geo_approx": p.get("geo_approx"),
                 "geo_src": p.get("geo_src"),
@@ -154,6 +199,10 @@ def main():
             continue
         if dp.get("area") != p.get("area"):
             dp["area"] = p.get("area"); synced += 1
+        if dp.get("core") != p.get("core"):
+            dp["core"] = p.get("core"); synced += 1
+        if dp.get("group") != p.get("group"):
+            dp["group"] = p.get("group"); synced += 1
         precise_dp = dp.get("lng") and dp.get("lat") and dp.get("geo_approx") is False
         if not precise_dp:
             if dp.get("lng") != p.get("lng") or dp.get("lat") != p.get("lat"):
@@ -179,8 +228,15 @@ def main():
             for m in members:
                 print(f"    {m['name']:42s} area={m.get('area'):8s} coord=({m.get('lng')},{m.get('lat')}) approx={m.get('geo_approx')}")
 
-    print("\n=== 同开发商雄炜其它项目 area hint ===")
-    print(f"  hint = {developer_area_hint('广州市雄炜房地产开发有限公司') or '(空)'}")
+    print("\n=== 修复前曾被拆到多板块的案例 ===")
+    for label in ["北优花园", "臻悦府", "融创璟府", "香樾四季花园"]:
+        rows = []
+        for (base, dev), members in groups.items():
+            if base == label:
+                areas = set(m.get("area") for m in members)
+                rows.append((dev, len(members), areas))
+        if rows:
+            print(f"  {label}: {rows}")
 
     # 数据校验
     fh = [p for p in projs if "凤凰瑞景" in (p.get("name") or "")]

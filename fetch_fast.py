@@ -167,6 +167,7 @@ def main():
             "id": pid, "name": p["name"], "developer": p.get("developer"),
             "presell": p.get("presell"), "address": p.get("address"),
             "area": p.get("area"),
+            "core": p.get("core"), "group": p.get("group"),
             "lng": p.get("lng"), "lat": p.get("lat"),
             "geo_approx": p.get("geo_approx"), "geo_src": p.get("geo_src"),
             # 摘要优先用本轮新鲜值；若本轮未拿到（瞬断）则保留旧摘要，绝不降级
