@@ -15,7 +15,6 @@
       供 auto_update 判断是否「主动推送」。
 """
 import json, time, os, sys, threading, hashlib
-import urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -26,37 +25,22 @@ PROJECTS_FILE = os.path.join(BASE, "projects.json")
 OUTPUT_FILE = os.path.join(BASE, "data.json")
 STATUS_FILE = os.path.join(BASE, "fetch_status.json")
 
-# 并发策略
-SUMMARY_WORKERS = 4      # 轻量摘要请求，可稍高并发
-SUMMARY_RETRIES = 2
-SUMMARY_TIMEOUT = 12
-FULL_WORKERS = 2         # 完整抓取（每盘数十次子请求），低并发更稳
-FULL_RETRIES = 2         # 真失败快速放弃，避免长尾
-FULL_TIMEOUT = 30
-RETRY_PASS_CAP = 150     # Phase A 缺失摘要重试上限（避免数百个缺失全重试拖爆）
-
-
-def gov_get(path, params, retries=SUMMARY_RETRIES, timeout=SUMMARY_TIMEOUT):
-    url = FR.GOV_BASE + path + "?" + urllib.parse.urlencode(params)
-    last = None
-    for i in range(retries):
-        try:
-            req = urllib.request.Request(url, headers=FR.HEADERS)
-            with urllib.request.urlopen(req, timeout=timeout) as r:
-                raw = r.read().decode("utf-8")
-            d = json.loads(raw)
-            if d.get("status") == 1:
-                return d
-            last = f"status={d.get('status')}"
-        except Exception as e:
-            last = str(e)
-        time.sleep(1.0 * (i + 1))
-    return None
+# 并发策略（阳光家缘 WAF 对并发极敏感：并发越高越易被秒拒；单线程+礼貌间隔+耐心重试最稳）
+SUMMARY_WORKERS = 1      # 摘要改为单线程，避免触发限流
+SUMMARY_RETRIES = 3      # 耐心重试，救回瞬断
+SUMMARY_TIMEOUT = 15
+SUMMARY_GAP = 0.8        # 两次摘要请求之间的礼貌间隔（秒），给令牌桶喘息
+FULL_WORKERS = 1         # 完整抓取单线程，最稳
+FULL_RETRIES = 3         # 耐心重试
+FULL_TIMEOUT = 40
+FULL_GAP = 1.0           # 两次完整抓取之间的间隔
+RETRY_PASS_CAP = 120     # Phase A 缺失摘要重试上限（避免数百个缺失全重试拖爆）
 
 
 def fetch_summary(pid):
-    """单次轻量请求：返回 (info, summary) 或 None。"""
-    d = gov_get("/ysqgk/Api/WebApi/fdcxmjbxx.ashx", {"sProjectId": pid})
+    """单次轻量请求：返回 (info, summary) 或 None。（HTTP 层统一走 fetch_robust.gov_get / curl）"""
+    d = FR.gov_get("/ysqgk/Api/WebApi/fdcxmjbxx.ashx", {"sProjectId": pid},
+                   retries=SUMMARY_RETRIES, timeout=SUMMARY_TIMEOUT)
     if not d:
         return None
     data = d.get("data") or {}
@@ -125,16 +109,17 @@ def main():
                 summaries[pid] = summ
                 info_only[pid] = info
                 ok[0] += 1
+        time.sleep(SUMMARY_GAP)   # 礼貌间隔，降低触发 WAF 限流概率
         return pid
 
     with ThreadPoolExecutor(max_workers=SUMMARY_WORKERS) as ex:
         list(ex.map(do_summary, projects))
 
-    # 失败摘要重试 pass：对没拿到摘要的盘，降到 2 线程再补一次（设上限，避免拖爆）
+    # 失败摘要重试 pass：对没拿到摘要的盘，单线程耐心补一次（设上限，避免拖爆）
     missing = [p for p in projects if p["id"] not in summaries][:RETRY_PASS_CAP]
     if missing:
-        print(f"  摘要缺失 {len(missing)} 个（上限{RETRY_PASS_CAP}），2 线程重试…", flush=True)
-        with ThreadPoolExecutor(max_workers=2) as ex:
+        print(f"  摘要缺失 {len(missing)} 个（上限{RETRY_PASS_CAP}），单线程重试…", flush=True)
+        with ThreadPoolExecutor(max_workers=1) as ex:
             list(ex.map(do_summary, missing))
     print(f"  摘要成功 {ok[0]}/{total}", flush=True)
 
@@ -156,12 +141,16 @@ def main():
     print(f"Phase B 需完整抓取 {len(need_full)} 个（{FULL_WORKERS} 线程，耐心重试）…", flush=True)
 
     fresh_detail = {}   # pid -> detail（本轮成功抓到）
+    def do_full(p):
+        det = FR.fetch_project(p["id"], FULL_RETRIES, FULL_TIMEOUT)
+        time.sleep(FULL_GAP)   # 礼貌间隔
+        return p, det
     with ThreadPoolExecutor(max_workers=FULL_WORKERS) as ex:
-        futs = {ex.submit(FR.fetch_project, p["id"], FULL_RETRIES, FULL_TIMEOUT): p for p in need_full}
+        futs = {ex.submit(do_full, p): p for p in need_full}
         done = [0]
         for fut in as_completed(futs):
             p = futs[fut]
-            det = fut.result()
+            _, det = fut.result()
             with lock:
                 if det:
                     fresh_detail[p["id"]] = det

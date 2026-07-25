@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """增量抓取：每抓一个就保存，支持断点续抓"""
-import json, time, urllib.request, urllib.parse, os, re, sys, threading
+import json, time, urllib.request, urllib.parse, os, re, sys, threading, subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 GOV_BASE = "https://zfcj.gz.gov.cn"
@@ -17,17 +17,34 @@ PROGRESS_FILE = os.path.join(BASE, "data_progress.json")
 
 
 def gov_get(path, params, retries=3, timeout=20):
+    """经 curl 调用阳光家缘 API。
+
+    注意：站点 WAF 会按请求指纹拦截 Python 内置 urllib（返回 HTTP 553），
+    但 curl 的请求指纹可通过。经实测 curl 稳定返回 200，故统一改用 curl 子进程。
+    """
     url = GOV_BASE + path + "?" + urllib.parse.urlencode(params)
     last = None
     for i in range(retries):
         try:
-            req = urllib.request.Request(url, headers=HEADERS)
-            with urllib.request.urlopen(req, timeout=timeout) as r:
-                raw = r.read().decode("utf-8")
+            r = subprocess.run(
+                ["curl", "-s", "--compressed", "--max-time", str(timeout),
+                 "-A", HEADERS["User-Agent"],
+                 "-e", HEADERS["Referer"],
+                 "-H", "X-Requested-With: XMLHttpRequest",
+                 "-H", "Accept: application/json, text/plain, */*",
+                 url],
+                capture_output=True, text=True, timeout=timeout + 15)
+            raw = (r.stdout or "").strip()
+            if not raw:
+                last = f"空响应 rc={r.returncode} err={(r.stderr or '')[:80]}"
+                time.sleep(1.5 * (i + 1))
+                continue
             d = json.loads(raw)
             if d.get("status") == 1:
                 return d
             last = f"status={d.get('status')}"
+        except subprocess.TimeoutExpired:
+            last = "curl 超时"
         except Exception as e:
             last = str(e)
         time.sleep(1.5 * (i + 1))
