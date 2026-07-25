@@ -23,6 +23,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 FILES = [
     "data.json", "projects.json", "fetch_status.json",
     "fetch_fast.py", "fetch_robust.py", "retry_failed.py", "build_projects.py",
+    "fix_grouping.py",
     "push_all.py", "auto_update.py", "deploy.py", "config.py",
     "index.html", "aliases.json",
 ]
