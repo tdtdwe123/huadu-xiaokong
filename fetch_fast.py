@@ -180,7 +180,9 @@ def main():
             "area": p.get("area"),
             "lng": p.get("lng"), "lat": p.get("lat"),
             "geo_approx": p.get("geo_approx"), "geo_src": p.get("geo_src"),
-            "summary": summaries.get(pid), "detail": None,
+            # 摘要优先用本轮新鲜值；若本轮未拿到（瞬断）则保留旧摘要，绝不降级
+            "summary": summaries.get(pid) if summaries.get(pid) is not None else (o or {}).get("summary"),
+            "detail": None,
         }
         # 坐标优先级：旧 data 已有坐标 > projects.json 原始坐标（保留精确/已修正坐标）
         o = old.get(pid)

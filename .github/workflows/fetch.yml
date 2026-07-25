@@ -16,7 +16,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 55  # 657 个楼盘全量刷新需要更长时间
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
 
@@ -25,21 +25,22 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 抓取实时数据（全量刷新，失败项自动从旧数据恢复）
-        run: python3 fetch_robust.py
+      - name: 差分快速抓取（仅对变动/缺失楼盘完整抓取，接口量从~1971降至~657+少量）
+        run: python3 fetch_fast.py
 
-      - name: 提交数据
+      - name: 提交并推送（仅当数据变动且抓取完整）
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # fresh_ok = 本次真正刷新成功的楼盘数；merge 逻辑已保证输出 data.json 完整，
-          # 因此只要成功刷新足够多（>=30）就提交，避免海外网络差时只更新时间戳。
-          fresh_ok=$(python3 -c "import json; print(json.load(open('fetch_status.json')).get('fresh_ok',0))")
-          echo "本次新鲜抓取楼盘数: $fresh_ok"
-          if [ "$fresh_ok" -ge 30 ]; then
-            git add data.json fetch_status.json
-            git commit -m "自动更新销控数据 $(date -u '+%Y-%m-%d %H:%M') UTC (fresh=$fresh_ok)"
+          changed=$(python3 -c "import json; print(json.load(open('fetch_status.json')).get('changed', False))")
+          sok=$(python3 -c "import json; print(json.load(open('fetch_status.json')).get('summary_ok', 0))")
+          echo "changed=$changed summary_ok=$sok"
+          # 双保险：有变动 + 摘要抓取足够完整（>=500/657），才推送，避免网络抖动时推送降级数据
+          if [ "$changed" = "True" ] && [ "$sok" -ge 500 ]; then
+            git add data.json fetch_status.json projects.json
+            git commit -m "自动更新销控数据 $(date -u '+%Y-%m-%d %H:%M') UTC"
             git push
+            echo "已推送变动数据"
           else
-            echo "新鲜数据不足 $fresh_ok，跳过提交以避免虚假时间戳"
+            echo "无变动或抓取不完整，跳过提交"
           fi
