@@ -198,6 +198,10 @@ function devPrefix(name){
        .replace(/住宅楼.*$/, '')
        .replace(/住宅.*$/, '')                             // 住宅（兜底）
        .replace(/商业.*$/, '')
+       .replace(/公配楼.*$/, '')
+       .replace(/公配.*$/, '')
+       .replace(/地下室.*$/, '')
+       .replace(/及.*$/, '')
        .replace(/、.*$/, '')
        .trim();
   n = n.replace(/\s*[0-9]+[栋号楼]*.*$/, '')                // 末尾 18 栋 / 11 / 1栋
