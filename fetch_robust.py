@@ -42,8 +42,9 @@ def clean_build_name(n):
     return n.strip()
 
 
-def fetch_project(pid):
-    d = gov_get("/ysqgk/Api/WebApi/fdcxmjbxx.ashx", {"sProjectId": pid})
+def fetch_project(pid, retries=3, timeout=20):
+    d = gov_get("/ysqgk/Api/WebApi/fdcxmjbxx.ashx", {"sProjectId": pid},
+                retries=retries, timeout=timeout)
     if not d:
         return None
     data = d.get("data") or {}
@@ -63,7 +64,8 @@ def fetch_project(pid):
         "totalSaleNum": pz.get("totalSaleNum"),
         "totalNosoldNum": pz.get("totalNosoldNum"),
     }
-    bd = gov_get("/ysqgk/Api/WebApi/xmldxx.ashx", {"sProjectId": pid, "sPreSellNo": ""})
+    bd = gov_get("/ysqgk/Api/WebApi/xmldxx.ashx", {"sProjectId": pid, "sPreSellNo": ""},
+                retries=retries, timeout=timeout)
     buildings = []
     if bd and isinstance(bd.get("data"), list):
         for b in bd["data"]:
@@ -72,7 +74,7 @@ def fetch_project(pid):
             xk = gov_get("/ysqgk/Api/WebApi/xmxkbxx.ashx", {
                 "buildingId": bid, "houseFunctionId": "0", "unitType": "",
                 "houseStatusId": "0", "totalAreaId": "0", "inAreaId": "0",
-            })
+            }, retries=retries, timeout=timeout)
             units = []
             if xk and isinstance(xk.get("data"), list):
                 for grp in xk["data"]:
@@ -150,8 +152,11 @@ def main():
                     json.dump(results, f, ensure_ascii=False, separators=(",", ":"))
         return pid
 
-    todo = [p for p in projects if p["id"] not in results]
-    print(f"并发抓取 {len(todo)} 个楼盘（3 线程）…", flush=True)
+    # 每次都重新抓取全部楼盘，以捕获销控状态变化（已售/解锁等）。
+    # 抓取失败的楼盘会从旧 data.json 恢复完整记录（见下方合并逻辑），
+    # 因此即使部分请求被限流，输出的 data.json 也始终完整、不会被刷空。
+    todo = list(projects)
+    print(f"并发抓取 {len(todo)} 个楼盘（3 线程，全量刷新）…", flush=True)
     with ThreadPoolExecutor(max_workers=3) as ex:
         list(ex.map(lambda args: fetch_one(*args), enumerate(todo)))
 

@@ -2,31 +2,44 @@ name: 更新销控数据
 
 on:
   schedule:
+    # 每小时整点运行（UTC 时间，即北京时间整点）
     - cron: '0 * * * *'
-  workflow_dispatch:
+  workflow_dispatch:  # 允许手动触发
+
+concurrency:
+  group: fetch-data
+  cancel-in-progress: false   # 上一次未跑完则等待，避免重叠抓取
 
 permissions:
-  contents: write
+  contents: write  # 允许提交到仓库
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 55  # 657 个楼盘全量刷新需要更长时间
     steps:
       - uses: actions/checkout@v4
+
       - name: 设置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: 抓取实时数据
-        run: python3 fetch_data.py
+
+      - name: 抓取实时数据（全量刷新，失败项自动从旧数据恢复）
+        run: python3 fetch_robust.py
+
       - name: 提交数据
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json
-          if git diff --cached --quiet; then
-            echo "数据无变化，跳过提交"
-          else
-            git commit -m "自动更新销控数据 $(date -u '+%Y-%m-%d %H:%M') UTC"
+          # fresh_ok = 本次真正刷新成功的楼盘数；merge 逻辑已保证输出 data.json 完整，
+          # 因此只要成功刷新足够多（>=30）就提交，避免海外网络差时只更新时间戳。
+          fresh_ok=$(python3 -c "import json; print(json.load(open('fetch_status.json')).get('fresh_ok',0))")
+          echo "本次新鲜抓取楼盘数: $fresh_ok"
+          if [ "$fresh_ok" -ge 30 ]; then
+            git add data.json fetch_status.json
+            git commit -m "自动更新销控数据 $(date -u '+%Y-%m-%d %H:%M') UTC (fresh=$fresh_ok)"
             git push
+          else
+            echo "新鲜数据不足 $fresh_ok，跳过提交以避免虚假时间戳"
           fi
