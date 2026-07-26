@@ -49,10 +49,28 @@ def core_of(p):
     return p.get("core") or p.get("name") or ""
 
 
-def run(dry=True, key=None):
+def load_aliases():
+    """aliases.json: 备案名前缀 -> {alias:推广名, filing:备案名}。返回 core->推广名 映射。"""
+    path = os.path.join(HERE, "aliases.json")
+    m = {}
+    try:
+        d = json.load(open(path, encoding="utf-8"))
+        for k, v in d.items():
+            if isinstance(v, dict):
+                if v.get("alias"):
+                    m[k] = v["alias"]
+                if v.get("filing"):
+                    m[v.get("filing")] = v.get("filing")
+    except Exception:
+        pass
+    return m
+
+
+def run(dry=True, key=None, limit=None):
     data = load(DATA_FILE)
     projects = data["projects"]
     approx = [p for p in projects if p.get("geo_approx")]
+    alias_map = load_aliases()
     print(f"总项目 {len(projects)}，街道级近似 {len(approx)}")
 
     fixed = 0
@@ -62,18 +80,15 @@ def run(dry=True, key=None):
         pid = p.get("id")
         addr = addr_of(p)
         core = core_of(p)
-        # 1) 完整备案地址
-        lng, lat, src = G.geocode(addr, key=key, project_id=pid, name=core)
-        method = "address"
-        # 2) 回退：core + 花都区
-        if lng is None and core:
-            lng, lat, src = G.geocode(core + " 花都区", key=key, project_id=pid, name=core)
-            method = "core"
+        # 推广名优先（来自 aliases.json），否则用 core
+        poi_kw = alias_map.get(core) or alias_map.get(p.get("group", "").split("|")[0]) or core
+        # 综合解析：POI(推广名) -> POI(备案名) -> 地址地理编码（均在 geocode 内编排）
+        lng, lat, src = G.geocode(addr, key=key, project_id=pid, name=core, core=poi_kw)
         if lng is None:
             pending += 1
             failed.append((p.get("name"), addr, core))
             continue
-        # 缓存/覆盖结果也做边界复核，避免落入界外
+        # 边界复核
         if not G.in_huadu(lat, lng):
             failed.append((p.get("name"), addr, core))
             continue
@@ -83,8 +98,12 @@ def run(dry=True, key=None):
         p["lng"] = round(lng, 6)
         p["lat"] = round(lat, 6)
         p["geo_approx"] = False
-        p["geo_src"] = "amap_geo" if method == "address" else "amap_poi"
+        p["geo_src"] = "amap_geo" if src == "amap_geo" else "amap_poi"
         fixed += 1
+        if fixed % 25 == 0:
+            print(f"[进度] 已修正 {fixed} 条，剩余近似 {len(approx)-fixed-pending} …", flush=True)
+        if limit and fixed >= limit:
+            break
 
     if not dry and fixed:
         save(data, DATA_FILE, compact=True)
@@ -127,4 +146,5 @@ if __name__ == "__main__":
         print("（无 AMAP_KEY，仅应用缓存/手工覆盖命中）")
     else:
         print("（未检测到 AMAP_KEY，执行干跑）")
-    run(dry=dry, key=key)
+    limit = int(os.environ.get("LIMIT", "0")) or None
+    run(dry=dry, key=key, limit=limit)
