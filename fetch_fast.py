@@ -14,11 +14,66 @@
 返回：写入 data.json / fetch_status.json；并通过 fetch_status.json 的 changed 标志
       供 auto_update 判断是否「主动推送」。
 """
-import json, time, os, sys, threading, hashlib
+import json, time, os, sys, threading, hashlib, subprocess, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fetch_robust as FR
+
+ROSTER_URL = "https://zfcj.gz.gov.cn/ysqgk/Api/WebApi/fdcxmxxlb.ashx"
+ROSTER_HDR = ["-A", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+              "-e", "https://zfcj.gz.gov.cn/zfcj/fyxx/fdcxmxx/index.html",
+              "-H", "X-Requested-With: XMLHttpRequest",
+              "-H", "Accept: application/json, text/plain, */*"]
+OVERLAY_FILE = os.path.join(BASE, "roster_overlay.json")
+
+
+def _roster_page(page, size=99):
+    url = ROSTER_URL + "?" + urllib.parse.urlencode({"page": page, "pageSize": size})
+    for _ in range(3):
+        try:
+            r = subprocess.run(["curl", "-s", "--compressed", "--max-time", "25"] + ROSTER_HDR + [url],
+                                capture_output=True, text=True, timeout=40)
+            d = json.loads(r.stdout or "")
+            if isinstance(d.get("data"), list) and d["data"]:
+                return d
+        except Exception:
+            pass
+        time.sleep(2.0)
+    return None
+
+
+def fetch_roster():
+    """拉取阳光家缘项目名册 (fdcxmxxlb.ashx)，返回 {projectId: {sold, unsold}}。
+    名册口径 houseSoldNum/houseUnsaleNum 即官网销控列表页口径，与我们的展示对齐。"""
+    out = {}
+    page = 1
+    while True:
+        d = _roster_page(page)
+        if not d or not d.get("data"):
+            break
+        for p in d["data"]:
+            try:
+                sold = int(p.get("houseSoldNum") or 0)
+            except Exception:
+                sold = 0
+            try:
+                unsold = int(p.get("houseUnsaleNum") or 0)
+            except Exception:
+                unsold = 0
+            out[p["projectId"]] = {"sold": sold, "unsold": unsold}
+        if page >= d.get("totalPage", 99999):
+            break
+        page += 1
+        time.sleep(0.4)
+    return out
+
+
+def load_roster_overlay():
+    try:
+        return json.load(open(OVERLAY_FILE, encoding="utf-8"))
+    except Exception:
+        return {}
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 PROJECTS_FILE = os.path.join(BASE, "projects.json")
@@ -71,10 +126,12 @@ def fingerprint(summ, presell):
 
 
 def _compact_sig(p):
-    """用于变化检测的轻量签名：摘要 + 是否有明细（兼容旧记录：摘要藏在 detail.summary）。"""
+    """用于变化检测的轻量签名：摘要 + 是否有明细 + 名册口径（与官网一致，需纳入变更检测）。"""
     s = p.get("summary") or (p.get("detail") or {}).get("summary") or {}
+    r = p.get("roster") or {}
     return (s.get("allowPresellNum"), s.get("totalSaleNum"),
-            s.get("totalNosoldNum"), bool(p.get("detail")))
+            s.get("totalNosoldNum"), bool(p.get("detail")),
+            r.get("sold"), r.get("unsold"))
 
 
 def main():
@@ -161,6 +218,21 @@ def main():
     # ---- 合并输出 ----
     out_projects = []
     restored = 0
+
+    # 官网名册口径 (houseSoldNum/houseUnsaleNum)：实时拉取优先，失败则回退缓存覆盖表
+    roster = fetch_roster()
+    roster_src = "live"
+    if not roster:
+        roster = load_roster_overlay()
+        roster_src = "overlay-cache"
+    # 把实时名册缓存下来，供 Actions/下次回退
+    if roster:
+        try:
+            json.dump(roster, open(OVERLAY_FILE, "w", encoding="utf-8"),
+                      ensure_ascii=False, separators=(",", ":"))
+        except Exception:
+            pass
+
     for p in projects:
         pid = p["id"]
         rec = {
@@ -192,6 +264,11 @@ def main():
         elif o and o.get("detail"):
             rec["detail"] = o["detail"]
             restored += 1
+        # 官网名册口径已售/未售（与阳光家缘官网销控列表一致）；缺失时回退旧值
+        if pid in roster:
+            rec["roster"] = roster[pid]
+        elif o and o.get("roster"):
+            rec["roster"] = o["roster"]
         out_projects.append(rec)
 
     out = {
