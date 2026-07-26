@@ -120,7 +120,7 @@ body.map #map{display:block}
 <div class="list" id="list">
   <div class="loading">正在加载实时数据…</div>
 </div>
-<div id="map"><button id="labelToggle" class="map-namebtn" onclick="toggleLabels()">名称</button><div class="map-hint">标记 <b>≈</b> 表示该小区位置为<b>街道级近似</b>（原数据地址只到街道），已尽量分散展示；精确坐标待校准。</div></div>
+<div id="map"><button id="labelToggle" class="map-namebtn on" onclick="toggleLabels()">名称</button><div class="map-hint">标记 <b>≈</b> 表示该小区位置为<b>街道级近似</b>（原数据地址只到街道），已尽量分散展示；精确坐标待校准。</div></div>
 <div class="note">数据来源：广州市住建局「阳光家缘」 · 仅供参考</div>
 
 <script src="leaflet.js"></script>
@@ -493,7 +493,7 @@ function hideUnit(){
 let MAP = null;
 let MARKERS = null;
 let MAP_DIRTY = true;
-let LABELS_ON = false;
+let LABELS_ON = true;
 
 function mapRateColor(rate){
   const r = parseFloat(rate)||0;
