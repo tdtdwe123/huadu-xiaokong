@@ -42,7 +42,7 @@ jobs:
             echo "抓取不完整（summary_ok<$sok），跳过提交"
             exit 0
           fi
-          git add data.json fetch_status.json projects.json fix_grouping.py
+          git add data.json fetch_status.json projects.json fix_grouping.py roster_overlay.json
           # 仅当文件确有变化才提交（fix_grouping 幂等：无变化则不产生 diff）
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "自动更新销控数据 + 聚类统一板块 $(date -u '+%Y-%m-%d %H:%M') UTC"
