@@ -212,6 +212,15 @@ function devPrefix(name){
 }
 
 function projStats(p){
+  // 优先用官网项目名册口径 (houseSoldNum/houseUnsaleNum)，与阳光家缘官网销控列表一致；
+  // 旧数据/个别缺失时回退到楼盘明细摘要 (pzystspzysmjxx)。
+  const r = p.roster;
+  if(r && (r.sold!=null || r.unsold!=null)){
+    const sold = r.sold||0, unsold = r.unsold||0;
+    const sum = (p.detail && p.detail.summary) || {};
+    const total = sum.allowPresellNum || (sold+unsold) || 0;
+    return {sold, unsold, total, rate: total>0 ? (sold/total*100).toFixed(1) : '0.0'};
+  }
   const sum = (p.detail && p.detail.summary) || {};
   const sold = sum.totalSaleNum || 0;
   const unsold = sum.totalNosoldNum || 0;
@@ -335,8 +344,10 @@ function renderDetail(idx, targetId){
     return;
   }
   const sum = d.summary || {};
-  const sold = sum.totalSaleNum || 0;
-  const unsold = sum.totalNosoldNum || 0;
+  const r = p.roster;
+  // 与列表一致：优先用官网名册口径
+  const sold = (r && r.sold!=null) ? r.sold : (sum.totalSaleNum || 0);
+  const unsold = (r && r.unsold!=null) ? r.unsold : (sum.totalNosoldNum || 0);
   const total = sum.allowPresellNum || (sold+unsold) || 0;
   const info = d.info || {};
   const blds = d.buildings || [];
