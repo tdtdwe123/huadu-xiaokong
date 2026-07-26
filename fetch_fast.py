@@ -20,6 +20,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fetch_robust as FR
 
+BASE = os.path.dirname(os.path.abspath(__file__))
+PROJECTS_FILE = os.path.join(BASE, "projects.json")
+OUTPUT_FILE = os.path.join(BASE, "data.json")
+STATUS_FILE = os.path.join(BASE, "fetch_status.json")
+
 ROSTER_URL = "https://zfcj.gz.gov.cn/ysqgk/Api/WebApi/fdcxmxxlb.ashx"
 ROSTER_HDR = ["-A", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
               "-e", "https://zfcj.gz.gov.cn/zfcj/fyxx/fdcxmxx/index.html",
@@ -74,11 +79,6 @@ def load_roster_overlay():
         return json.load(open(OVERLAY_FILE, encoding="utf-8"))
     except Exception:
         return {}
-
-BASE = os.path.dirname(os.path.abspath(__file__))
-PROJECTS_FILE = os.path.join(BASE, "projects.json")
-OUTPUT_FILE = os.path.join(BASE, "data.json")
-STATUS_FILE = os.path.join(BASE, "fetch_status.json")
 
 # 并发策略（阳光家缘 WAF 对并发极敏感：并发越高越易被秒拒；单线程+礼貌间隔+耐心重试最稳）
 SUMMARY_WORKERS = 1      # 摘要改为单线程，避免触发限流
