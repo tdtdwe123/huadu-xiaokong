@@ -40,6 +40,8 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .stat-box .stat.sold .n{color:#e8590c}
 .stat-box .stat.unsold .n{color:#1f6feb}
 .stat-box .stat.total .n{color:#333}
+.stat-box .stat.np{background:#fff7e6}
+.stat-box .stat.np .n{color:#d48806}
 .buildings{margin-top:6px}
 .bld{margin-bottom:8px;border:1px solid #eee;border-radius:8px;overflow:hidden}
 .bld .bhead{background:#f8f9fc;padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
@@ -215,17 +217,25 @@ function projStats(p){
   // 优先用官网项目名册口径 (houseSoldNum/houseUnsaleNum)，与阳光家缘官网销控列表一致；
   // 旧数据/个别缺失时回退到楼盘明细摘要 (pzystspzysmjxx)。
   const r = p.roster;
+  const sum = (p.detail && p.detail.summary) || {};
+  const info = (p.detail && p.detail.info) || {};
+  // preSellNo 为空 → 未取得预售证，不纳入销售池；官网用 ★ 标记，统计应剔除。
+  const hasPresell = !!(info.preSellNo || p.presell);
+  // 未纳入预售盘的参考套数（单盘详情展示用，但不计入板块汇总）
+  const npCount = !hasPresell ? ((sum.totalSaleNum||0)+(sum.totalNosoldNum||0)) : 0;
   if(r && (r.sold!=null || r.unsold!=null)){
     const sold = r.sold||0, unsold = r.unsold||0;
-    const sum = (p.detail && p.detail.summary) || {};
     const total = sum.allowPresellNum || (sold+unsold) || 0;
-    return {sold, unsold, total, rate: total>0 ? (sold/total*100).toFixed(1) : '0.0'};
+    const rate = !hasPresell ? '未纳入预售' : (total>0 ? (sold/total*100).toFixed(1) : '0.0');
+    return {sold, unsold, total, rate, hasPresell, npCount};
   }
-  const sum = (p.detail && p.detail.summary) || {};
   const sold = sum.totalSaleNum || 0;
   const unsold = sum.totalNosoldNum || 0;
   const total = sum.allowPresellNum || (sold+unsold) || 0;
-  return {sold, unsold, total, rate: total>0 ? (sold/total*100).toFixed(1) : '0.0'};
+  if(!hasPresell){
+    return {sold:0, unsold:0, total:0, rate:'未纳入预售', hasPresell:false, npCount};
+  }
+  return {sold, unsold, total, rate: total>0 ? (sold/total*100).toFixed(1) : '0.0', hasPresell:true, npCount:0};
 }
 
 function buildGroups(list){
@@ -245,10 +255,16 @@ function buildGroups(list){
   return Object.keys(map).sort().map(k=>{
     const g = map[k];
     const al = aliasOf(g.prefix);
-    let sold=0, unsold=0, total=0;
+    let sold=0, unsold=0, total=0, npCount=0, npMembers=0;
     g.members.forEach(p=>{
       const s = projStats(p);
-      sold+=s.sold; unsold+=s.unsold; total+=s.total;
+      // 未取得预售证的盘不计入板块销售汇总（官网标 ★），只计数提示
+      if(s.hasPresell){
+        sold+=s.sold; unsold+=s.unsold; total+=s.total;
+      } else {
+        npCount += s.npCount;
+        npMembers++;
+      }
     });
     // 组内板块取多数票（fix_grouping 已统一，正常为单一值；此处兜底防异常）
     let area = '', maxc = -1;
@@ -256,6 +272,7 @@ function buildGroups(list){
     g.area = area;
     g.alias = al;
     g.sold=sold; g.unsold=unsold; g.total=total;
+    g.npCount=npCount; g.npMembers=npMembers;
     g.rate = total>0 ? (sold/total*100).toFixed(1) : '0.0';
     return g;
   });
@@ -290,7 +307,7 @@ function renderGroupRow(g, gi){
       <span class="namewrap">
         <span class="name${isAlias?' alias':''}">${esc(title)}${isAlias?'<span class="tag">推广</span>':''}</span>
         ${isAlias?`<span class="nsub">阳光家缘：${esc(g.prefix)}</span>`:''}
-        ${g.members.length>1?`<span class="nsub">${g.members.length} 个预售证/楼栋</span>`:''}
+        ${g.members.length>1?`<span class="nsub">${g.members.length} 个预售证/楼栋${g.npMembers?` · ${g.npMembers} 个未预售`:''}</span>`:''}
       </span>
       <span class="area">${esc(g.area||'')}</span>
       <span class="rate">${g.rate}%</span>
@@ -345,11 +362,14 @@ function renderDetail(idx, targetId){
   }
   const sum = d.summary || {};
   const r = p.roster;
+  const info = d.info || {};
+  // preSellNo 为空 → 未取得预售证，不纳入销售池
+  const hasPresell = !!(info.preSellNo || p.presell);
   // 与列表一致：优先用官网名册口径
   const sold = (r && r.sold!=null) ? r.sold : (sum.totalSaleNum || 0);
   const unsold = (r && r.unsold!=null) ? r.unsold : (sum.totalNosoldNum || 0);
   const total = sum.allowPresellNum || (sold+unsold) || 0;
-  const info = d.info || {};
+  const npCount = hasPresell ? 0 : (sold + unsold); // 未纳入预售盘的参考总套数
   const blds = d.buildings || [];
   el.innerHTML = `
     <div class="info">
@@ -357,15 +377,20 @@ function renderDetail(idx, targetId){
       <b>阳光家缘名称：</b>${esc(p.name)}<br>
       ${al&&al.filing?`<b>备案名：</b><span class="infobn">${esc(al.filing)}</span>${al.src?` <span class="src">(${esc(al.src)})</span>`:''}<br>`:''}
       <b>开发商：</b>${esc(info.developer||p.developer||'-')}<br>
-      <b>预售证：</b>${esc(info.preSellNo||p.presell||'-')}<br>
+      <b>预售证：</b>${esc(info.preSellNo||p.presell||'-')}${hasPresell?'':' <span style="color:#e8590c;font-size:11px">★未纳入预售</span>'}<br>
       <b>地址：</b>${esc(info.pjAddress||p.address||'-')}<br>
       ${p.geo_approx?`<b style="color:#e8590c">位置：</b><span style="color:#e8590c">近似（街道级），精确坐标待校准 ≈</span><br>`:''}
       <b>总面积：</b>${esc(info.totalBuildingArea||'-')}㎡
     </div>
     <div class="stat-box">
+      ${hasPresell?`
       <div class="stat sold"><div class="n">${sold}</div><div class="l">已售</div></div>
       <div class="stat unsold"><div class="n">${unsold}</div><div class="l">未售</div></div>
       <div class="stat total"><div class="n">${total}</div><div class="l">总套数</div></div>
+      `:`
+      <div class="stat np"><div class="n">${npCount}</div><div class="l">未纳入预售</div></div>
+      <div class="stat total"><div class="n">${npCount}</div><div class="l">总套数</div></div>
+      `}
     </div>
     <div class="legend">
       <span><i style="background:#52c41a"></i>可售</span>
