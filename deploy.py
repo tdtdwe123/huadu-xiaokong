@@ -24,7 +24,7 @@ FILES = [
     "data.json", "projects.json", "fetch_status.json",
     "fetch_fast.py", "fetch_robust.py", "retry_failed.py", "build_projects.py",
     "fix_grouping.py", "apply_roster.py", "roster_overlay.json", "refetch_none_buildings.py",
-    "refetch_all_empty_buildings.py",
+    "refetch_all_empty_buildings.py", "refetch_unit_marks.py",
     "geocode.py", "geocode_pipeline.py", "geocode_cache.json", "coord_overrides.json",
     "push_all.py", "auto_update.py", "deploy.py", "config.py",
     "index.html", "aliases.json",
