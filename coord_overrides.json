@@ -1,43 +1,3945 @@
 {
- "_comment": "手工坐标覆盖：按项目精确名 -> 坐标。来源：高德 POI 检索（富力·金港城/碧桂园假日半岛映翠苑/芙蓉度假村）。优先级最高，覆盖地理编码结果。",
- "富力金港新城（东区）A1-A3、E1-E3栋": {
-  "lng": 113.36045,
-  "lat": 23.45818,
-  "src": "芙蓉度假村旁·富力金港城"
- },
- "富力金港新城（自编A1-A9栋）": {
-  "lng": 113.36045,
-  "lat": 23.45818,
-  "src": "芙蓉度假村旁·富力金港城"
- },
- "富力金港新城（自编A10-A18栋）": {
-  "lng": 113.36045,
-  "lat": 23.45818,
-  "src": "芙蓉度假村旁·富力金港城"
- },
- "富力金港新城（自编C15－C20栋）": {
-  "lng": 113.36045,
-  "lat": 23.45818,
-  "src": "芙蓉度假村旁·富力金港城"
- },
- "银湖湾": {
-  "lng": 113.23035,
-  "lat": 23.51056,
-  "src": "芙蓉度假村中心"
- },
- "银湖湾自编（37-47栋）": {
-  "lng": 113.23035,
-  "lat": 23.51056,
-  "src": "芙蓉度假村中心"
- },
- "银湖湾（自编1-36栋）": {
-  "lng": 113.23035,
-  "lat": 23.51056,
-  "src": "芙蓉度假村中心"
- },
- "假日半岛H区五期第三部分": {
-  "lng": 113.06613,
-  "lat": 23.48215,
-  "src": "碧桂园假日半岛映翠苑"
- }
+"_comment": "按项目稳定 id -> 坐标。由高德 POI/地理编码校正生成，优先级最高，每小时自动重建 data.json 时由 fetch_fast.py 套用，确保精确坐标不回退。geo_src 保留来源。",
+"3fd9236d52f442399b9437e1fe6fa7c0": {
+"lng": 113.220283,
+"lat": 23.366907,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"08f24d35ea2940a2a6e953d350b482f2": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"5acff5fc7ea04e1ea7c2f3c94bd57527": {
+"lng": 113.147961,
+"lat": 23.466617,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"42c8c16a32fb4454b4a662c141ad615a": {
+"lng": 113.20789,
+"lat": 23.378628,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"d71343a110514e9fb448bf39aeac205c": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"b7769c858f0b4392ab13ada870e58a10": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"72193126ca1247d88106081c14467007": {
+"lng": 113.224774,
+"lat": 23.334508,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"c9fc94326a6f4ee4b0f4fae3cb5f1ec1": {
+"lng": 113.255915,
+"lat": 23.371089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"ede52a29abef49259ffc431a5e710d86": {
+"lng": 113.220283,
+"lat": 23.366907,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"b4153ddb8cbc47a5a3c643da67c029e2": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"e6d0d626539748bcbc9da8031f3e3535": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"dadf4ce108ff445d958f7931e9aa0f04": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f6e9c4e983a94413a3629715b3b87fe5": {
+"lng": 113.230872,
+"lat": 23.432413,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"54c797131f06479aad983c0fe3f5a2c0": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"b93e7ca2bdbc4ed28f4170dd0ebedb4b": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"f63178ce6dd5482fadd1f6b4eaae4b01": {
+"lng": 113.186375,
+"lat": 23.386475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"fe5629a13ba2439aaddec61545359fcb": {
+"lng": 113.233657,
+"lat": 23.388707,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"160dc95ea0914ea6b785ce2ca89c9d16": {
+"lng": 113.234071,
+"lat": 23.418391,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"7b5de5841752482ba97489ef5e13e0cd": {
+"lng": 113.235116,
+"lat": 23.433521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"1bbca8b2b6064b47a1415fadc7342286": {
+"lng": 113.220283,
+"lat": 23.366907,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"f9cc3055b2bc48df94b8f117f8654584": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"906e39fbaa63466eaf3e2fbac9b7ae94": {
+"lng": 113.188974,
+"lat": 23.368939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"bacec6b920a142eeb24f385ea1deb67f": {
+"lng": 113.255915,
+"lat": 23.371089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"4a9d269068cf42beb4a0a02f61887dc9": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"2860ea338e3f483b857000ffdc0b091f": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"87ebd6707cf742efaa7db4236bd9584f": {
+"lng": 113.226482,
+"lat": 23.410871,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"8d8cd05945f74ff2b11c982853d7654b": {
+"lng": 113.21951,
+"lat": 23.451724,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"825085b13a7b41c3ac0661b91f3e3f0c": {
+"lng": 113.235116,
+"lat": 23.433521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"771fce11e1db4acf86eb4fdd4a6d155e": {
+"lng": 113.186375,
+"lat": 23.386475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"bedbd5e0f4ba42bfa7d0a41445d2c4cf": {
+"lng": 113.234071,
+"lat": 23.418391,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"8ff874e4685e4158acfe1cf3afc88d6d": {
+"lng": 113.20789,
+"lat": 23.378628,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"8a1d82cb809c4fa1b447474f2b8c0b94": {
+"lng": 113.22368,
+"lat": 23.411843,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"48458141938a496f9169eb9a2507545f": {
+"lng": 113.235116,
+"lat": 23.433521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"2a1c20b28d1440f6865509a75a92a61c": {
+"lng": 113.181471,
+"lat": 23.375225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"16a9cc74f6ca4a5d97f94e207a0e2e4b": {
+"lng": 113.229229,
+"lat": 23.357342,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"9d076c5f2af64180a3894f79df7fefcf": {
+"lng": 113.222965,
+"lat": 23.348241,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"6001793ae2e344309a85673c169dbf8a": {
+"lng": 113.234071,
+"lat": 23.418391,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"62e8ae92ee514dd298ccb429e470ff19": {
+"lng": 113.255915,
+"lat": 23.371089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f00dcfa5798a45f1b9b042bb47981d2b": {
+"lng": 113.220624,
+"lat": 23.367442,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"06de03ecbdcf4f7094a220fadd492ae5": {
+"lng": 113.111717,
+"lat": 23.335114,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"0a57e8f9105b46a1a110b9191e5be2aa": {
+"lng": 113.229229,
+"lat": 23.357342,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"cab165f1a25446fc8ff89f4d6bdab0be": {
+"lng": 113.205968,
+"lat": 23.380094,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"fe031b10a07749f5b337255df0adde1c": {
+"lng": 113.181471,
+"lat": 23.375225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"1c9daacf7988480ea8f63d544fd4676c": {
+"lng": 113.234071,
+"lat": 23.418391,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"dc8e0669d09b4f0db43db066a796ee8b": {
+"lng": 113.235116,
+"lat": 23.433521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"9cf2fb8a54694dd1a68141f12cdbb734": {
+"lng": 113.186375,
+"lat": 23.386475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"1a8c7c5734004f9fa3dd7f4819c77f28": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f49eec1682c1400dbcce12f973c829bf": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"59330a94afb84d71a97ad33816f4e689": {
+"lng": 113.229229,
+"lat": 23.357342,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"4bc82d282757426fa129c0eaf377b077": {
+"lng": 113.181471,
+"lat": 23.375225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"a1ea20e5f2bd494d95f648db8641d6e5": {
+"lng": 113.223375,
+"lat": 23.385325,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"8c3d88796f1844a4be34f06aaa482e49": {
+"lng": 113.235116,
+"lat": 23.433521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"5597066d3d844f89b3d5bbe1596187b1": {
+"lng": 113.205968,
+"lat": 23.380094,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"93af6542ec714f72908ecafd805a07a8": {
+"lng": 113.235116,
+"lat": 23.433521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"fca45a6ae9934d0c8fa0888bc4c901a5": {
+"lng": 113.181471,
+"lat": 23.375225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"19ef1cda777a442d964966ea1faa163c": {
+"lng": 113.234071,
+"lat": 23.418391,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"14f4fbe5faaf42c489a03592d8adea15": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"ee68564348d24e21a0f3dce46a135b30": {
+"lng": 113.219807,
+"lat": 23.38328,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"1647e23daf48480886bc0805a3a6bac8": {
+"lng": 113.186375,
+"lat": 23.386475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"5e2aa4d2dc71499e874e05ebacbd92ff": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"33deea696f464b3889a944baf3262228": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22be01b54ae2450587c859fd72f0bef2": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"54602e109cc54f81a1a540c9a9bde88d": {
+"lng": 113.267498,
+"lat": 23.359468,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"33ceeb92653a42129b38702fdd7fa076": {
+"lng": 113.233657,
+"lat": 23.388707,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"56d235f6cd8040da9a710ab1ba9efe65": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"1347074b63d34c2eaf0d009a6312cb0e": {
+"lng": 113.186375,
+"lat": 23.386475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"b2d66126102b4b34b3011737f35d3c40": {
+"lng": 113.219807,
+"lat": 23.38328,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"119d5cb53317473c83497293b61cc2db": {
+"lng": 113.220624,
+"lat": 23.367442,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"e9f00b688578452d9ba1e51479a3fc77": {
+"lng": 113.219807,
+"lat": 23.38328,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"60f1df85f211407ba607adc86dc25b1d": {
+"lng": 113.249367,
+"lat": 23.433806,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"10d09e3645a14ba6b85d6501d428cb44": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"b3a4cc63f9994f1aa6a20f20a347e417": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"ed2a911e5e8d485e9941742547d27922": {
+"lng": 113.188223,
+"lat": 23.358396,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"399446b3a4124e4195c2dde9d3f14623": {
+"lng": 113.183507,
+"lat": 23.366139,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"c68dfc2023de4b33822b8ee4f25c3fb2": {
+"lng": 113.111717,
+"lat": 23.335114,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"23352d3e3e4e462d9367b36d620b4004": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f72d654ad4a042a8885dd122990a6931": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"860790e72b1349fbb3fcc5e08fb32aa2": {
+"lng": 113.249809,
+"lat": 23.433722,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"2283c6ae47114d9d88b0b5ca2f07256d": {
+"lng": 113.180693,
+"lat": 23.447937,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"37505e9d40874724a1374860e7bf6407": {
+"lng": 113.180693,
+"lat": 23.447937,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"f34546b3bea346118152f2622c688ec2": {
+"lng": 113.188223,
+"lat": 23.358396,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"024889659aca4c7c853238f59a2c74be": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"c043812704eb44ed90631f17f56a346c": {
+"lng": 113.233647,
+"lat": 23.407346,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"dc0716d9deba4df79a7a2f90c9e22af9": {
+"lng": 113.183507,
+"lat": 23.366139,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"e3228f453a9c4a7aa710061c5c34ee10": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024139": {
+"lng": 113.189728,
+"lat": 23.445253,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"0148b7a224e74bfd9e7eb512a47991a9": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"93b28e3bbd034b44b4ed88cd0c126012": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"d5b4fb32c6614fc591aaf5af5a23ace3": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"961c9c99b3e54ad5962558091e26089b": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"133a766e421b465d9f51ac0b785b8878": {
+"lng": 113.249367,
+"lat": 23.433806,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"90a248ae2b25415ab0a5fe18c237efec": {
+"lng": 113.183507,
+"lat": 23.366139,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"379a39804f9f4264ba5aaf65b9505cce": {
+"lng": 113.199375,
+"lat": 23.372975,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"190ba9d0fbcd41e899b1ae1eeb7f2234": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"9d464c8e778448aaa30d446c53dabda4": {
+"lng": 113.183507,
+"lat": 23.366139,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"751e55c998754a569b4a0b1467a70858": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"dd5a58382a0a4004a7b7566f21059c0a": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"5bf70b635d5743b48aa42d6576a4b1b0": {
+"lng": 113.416825,
+"lat": 23.459225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"dc520a663551468891a9a955edee2e81": {
+"lng": 113.416825,
+"lat": 23.459225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023051": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"7708abb344d54e099ac752bbd4e5dc0a": {
+"lng": 113.180693,
+"lat": 23.447937,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"60bdcc021b204874a87d6102fd98eb00": {
+"lng": 113.180693,
+"lat": 23.447937,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"c73691bb606a4d4d8af27aa0e0628d10": {
+"lng": 113.249367,
+"lat": 23.433806,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"a5a9fefe49a144719a41ec757e8c4ef0": {
+"lng": 113.230427,
+"lat": 23.401663,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"5f8e79069c1f47f094317b2925fae8d9": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"1a30759724a9436fab349cfb06215e3d": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"4eadc0fb0bea4eb1a30718e987c7fd8d": {
+"lng": 113.199375,
+"lat": 23.372975,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"729d666caa8c4f33a5e599529160da4b": {
+"lng": 113.077877,
+"lat": 23.23952,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"7f5ec85526114222a592249e9d8c039e": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"15cc2d265dbc4d93bf186bb38ce3c878": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"0bfafac9020148a594e8b60131179842": {
+"lng": 113.180693,
+"lat": 23.447937,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"739134416d574f20b15616a3acf2499a": {
+"lng": 113.233647,
+"lat": 23.407346,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"0804ed6f32cf410b943bf0e9a8fdfd31": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f62f8fb48fc04243bd20218c3c53a163": {
+"lng": 113.250515,
+"lat": 23.367442,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000025163": {
+"lng": 113.223893,
+"lat": 23.488429,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"21d61a974dc348c19ae10926f5dbb79d": {
+"lng": 113.111717,
+"lat": 23.335114,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000025108": {
+"lng": 113.245212,
+"lat": 23.433686,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024998": {
+"lng": 113.190244,
+"lat": 23.37228,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023345": {
+"lng": 113.425213,
+"lat": 23.44921,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000025019": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024173": {
+"lng": 113.250515,
+"lat": 23.367442,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024515": {
+"lng": 113.183507,
+"lat": 23.366139,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000024482": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023950": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024175": {
+"lng": 113.180913,
+"lat": 23.406696,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024434": {
+"lng": 113.249809,
+"lat": 23.433722,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000023980": {
+"lng": 113.187045,
+"lat": 23.370159,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000023932": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023955": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023948": {
+"lng": 113.234775,
+"lat": 23.388325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023637": {
+"lng": 113.255005,
+"lat": 23.371405,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000023652": {
+"lng": 113.233647,
+"lat": 23.407346,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023395": {
+"lng": 113.224774,
+"lat": 23.334508,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023461": {
+"lng": 113.159276,
+"lat": 23.468558,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023313": {
+"lng": 113.185336,
+"lat": 23.388387,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000023342": {
+"lng": 113.233658,
+"lat": 23.488141,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023352": {
+"lng": 113.226662,
+"lat": 23.429811,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022867": {
+"lng": 113.24816,
+"lat": 23.431668,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022890": {
+"lng": 113.24816,
+"lat": 23.431668,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023098": {
+"lng": 113.21809,
+"lat": 23.488668,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022909": {
+"lng": 113.24816,
+"lat": 23.431668,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022894": {
+"lng": 113.24816,
+"lat": 23.431668,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022889": {
+"lng": 113.24816,
+"lat": 23.431668,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022859": {
+"lng": 113.220125,
+"lat": 23.404326,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022965": {
+"lng": 113.234775,
+"lat": 23.388325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022556": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022769": {
+"lng": 113.110941,
+"lat": 23.336301,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022531": {
+"lng": 113.224774,
+"lat": 23.334508,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022637": {
+"lng": 113.111717,
+"lat": 23.335114,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022614": {
+"lng": 113.179827,
+"lat": 23.456224,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022462": {
+"lng": 113.179965,
+"lat": 23.42404,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022116": {
+"lng": 113.375273,
+"lat": 23.417641,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021790": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021571": {
+"lng": 113.240312,
+"lat": 23.377249,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021217": {
+"lng": 113.417374,
+"lat": 23.42521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021229": {
+"lng": 113.208223,
+"lat": 23.415771,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020826": {
+"lng": 113.227118,
+"lat": 23.426708,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020556": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020606": {
+"lng": 113.224332,
+"lat": 23.423177,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000020559": {
+"lng": 113.375273,
+"lat": 23.417641,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020115": {
+"lng": 113.184596,
+"lat": 23.430638,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020246": {
+"lng": 113.240312,
+"lat": 23.377249,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020001": {
+"lng": 113.211828,
+"lat": 23.422746,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020177": {
+"lng": 113.213128,
+"lat": 23.391021,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018822": {
+"lng": 113.226753,
+"lat": 23.379946,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019581": {
+"lng": 113.417374,
+"lat": 23.42521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000019568": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019584": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019492": {
+"lng": 113.227873,
+"lat": 23.465462,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000019263": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019301": {
+"lng": 113.223351,
+"lat": 23.423234,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018789": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018510": {
+"lng": 113.193634,
+"lat": 23.453521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000018327": {
+"lng": 113.364214,
+"lat": 23.443461,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018166": {
+"lng": 113.192028,
+"lat": 23.391211,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017994": {
+"lng": 113.249223,
+"lat": 23.359871,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017496": {
+"lng": 113.220956,
+"lat": 23.372619,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017823": {
+"lng": 113.225385,
+"lat": 23.426967,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017409": {
+"lng": 113.229405,
+"lat": 23.432372,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017313": {
+"lng": 113.271997,
+"lat": 23.513675,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000017039": {
+"lng": 113.235392,
+"lat": 23.405818,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017081": {
+"lng": 113.229405,
+"lat": 23.432372,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017085": {
+"lng": 113.229405,
+"lat": 23.432372,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016205": {
+"lng": 113.193634,
+"lat": 23.453521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000016650": {
+"lng": 113.216821,
+"lat": 23.371311,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015913": {
+"lng": 113.192028,
+"lat": 23.391211,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015903": {
+"lng": 113.198582,
+"lat": 23.366136,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000016235": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016201": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015462": {
+"lng": 113.193634,
+"lat": 23.453521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000015546": {
+"lng": 113.113979,
+"lat": 23.337644,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013837": {
+"lng": 113.368546,
+"lat": 23.414966,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015025": {
+"lng": 113.212327,
+"lat": 23.424056,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014833": {
+"lng": 113.230806,
+"lat": 23.469874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014348": {
+"lng": 113.17198,
+"lat": 23.45758,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014459": {
+"lng": 113.195594,
+"lat": 23.371308,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014517": {
+"lng": 113.233239,
+"lat": 23.399874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014115": {
+"lng": 113.249223,
+"lat": 23.359871,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013655": {
+"lng": 113.221842,
+"lat": 23.391767,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013635": {
+"lng": 113.192611,
+"lat": 23.443123,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013221": {
+"lng": 113.192028,
+"lat": 23.391211,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012209": {
+"lng": 113.15346,
+"lat": 23.476133,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000013428": {
+"lng": 113.191315,
+"lat": 23.483842,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013440": {
+"lng": 113.229849,
+"lat": 23.402183,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013209": {
+"lng": 113.274116,
+"lat": 23.437813,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013092": {
+"lng": 113.183545,
+"lat": 23.377596,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012976": {
+"lng": 113.178818,
+"lat": 23.449063,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000013038": {
+"lng": 113.192028,
+"lat": 23.391211,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012656": {
+"lng": 113.19383,
+"lat": 23.378637,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012403": {
+"lng": 113.198582,
+"lat": 23.366136,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000012412": {
+"lng": 113.198582,
+"lat": 23.366136,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000012191": {
+"lng": 113.076489,
+"lat": 23.237277,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012187": {
+"lng": 113.415025,
+"lat": 23.466075,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012204": {
+"lng": 113.259552,
+"lat": 23.402474,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012192": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000011942": {
+"lng": 113.184596,
+"lat": 23.430638,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011419": {
+"lng": 113.076489,
+"lat": 23.237277,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011315": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011197": {
+"lng": 113.170825,
+"lat": 23.460025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011194": {
+"lng": 113.171778,
+"lat": 23.451643,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011183": {
+"lng": 113.182161,
+"lat": 23.448453,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011145": {
+"lng": 113.198791,
+"lat": 23.422142,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000011175": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011110": {
+"lng": 113.1116,
+"lat": 23.332089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010810": {
+"lng": 113.223397,
+"lat": 23.357401,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010516": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010629": {
+"lng": 113.196212,
+"lat": 23.377274,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010988": {
+"lng": 113.076489,
+"lat": 23.237277,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010717": {
+"lng": 113.251505,
+"lat": 23.372421,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010728": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010640": {
+"lng": 113.211972,
+"lat": 23.376883,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010548": {
+"lng": 113.273184,
+"lat": 23.441489,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010413": {
+"lng": 113.442989,
+"lat": 23.451735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010114": {
+"lng": 113.236407,
+"lat": 23.38633,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"46880": {
+"lng": 113.153617,
+"lat": 23.468562,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29894": {
+"lng": 113.177561,
+"lat": 23.45644,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"45763": {
+"lng": 113.183038,
+"lat": 23.455762,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"46281": {
+"lng": 113.185224,
+"lat": 23.454565,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"42082": {
+"lng": 113.184596,
+"lat": 23.430638,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"43671": {
+"lng": 113.184596,
+"lat": 23.430638,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"37109": {
+"lng": 113.183038,
+"lat": 23.455762,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29178": {
+"lng": 113.260267,
+"lat": 23.401124,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"41216": {
+"lng": 113.15346,
+"lat": 23.476133,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"40463": {
+"lng": 113.191315,
+"lat": 23.483842,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"33615": {
+"lng": 113.192028,
+"lat": 23.391211,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"24306": {
+"lng": 113.185272,
+"lat": 23.469642,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"36215": {
+"lng": 113.159276,
+"lat": 23.468558,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"30663": {
+"lng": 113.153617,
+"lat": 23.468562,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"31221": {
+"lng": 113.183038,
+"lat": 23.455762,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"28934": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29251": {
+"lng": 113.238816,
+"lat": 23.496781,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"28266": {
+"lng": 113.335988,
+"lat": 23.438681,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"27121": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"18786": {
+"lng": 113.155654,
+"lat": 23.376321,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"86eb7684aaa04f149c3ae95308fec77f": {
+"lng": 113.208223,
+"lat": 23.415771,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"d97e68d6d11e4ac9bfd8d85a62fbd291": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f3aa15fe86e445aab45f69a97bfb8865": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"58b4c16e3c114bdcadbd329981f67f50": {
+"lng": 113.219871,
+"lat": 23.412318,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"6373f951d9074355acdfc088cdf5f565": {
+"lng": 113.309596,
+"lat": 23.149191,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"16fab027ae424b0aa013ff35a5f495bd": {
+"lng": 113.242029,
+"lat": 23.381351,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"1cfd414b50734da08aee1c3b32f03660": {
+"lng": 113.220283,
+"lat": 23.366907,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"6799db20739f46349f2be4b8c5efc016": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"fca81e504a4c438fb31a0f92bbef9fcc": {
+"lng": 113.199857,
+"lat": 23.365499,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"0ac026936dad4ffd9435cf1129ef0954": {
+"lng": 113.309596,
+"lat": 23.149191,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"52d5bedc1d2548c6addab645c9ed192f": {
+"lng": 113.220624,
+"lat": 23.367442,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"b1f0a2a36a2343dda0eb34349ae2d49c": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"821e4e10247b4b99854a7d4320dca759": {
+"lng": 113.199375,
+"lat": 23.372975,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"d1a2868696c54c3789a9b04a4cda95dc": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"71fdaf5f52ca40939c1e37ccc4da495c": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"4e7e377efd3642238862cbf440d13c12": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"370835c2e60746d6b01699c68fcef9c5": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"265d23e8c1b443d9be9d6f2d1dcce105": {
+"lng": 113.183507,
+"lat": 23.366139,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"da14b76e5bd44984a7c7e341f2c83ee9": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"c1788afa96ea4f4ca26eabfe71c742be": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"2e817389f1494fa298e2f03b60c6c2fe": {
+"lng": 113.416825,
+"lat": 23.459225,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"8a57bf9a890d4296960882a070c5b9b8": {
+"lng": 113.248068,
+"lat": 23.433275,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"5becaee15b2744058c996a46dec258f2": {
+"lng": 113.28924,
+"lat": 23.133138,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"d907579dfd64463b8317e4e42bc18872": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"daeeb69960cd48f98331491bafbacb10": {
+"lng": 113.164853,
+"lat": 23.477178,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"e76d7ac5b9ea4afb9cc77ba9ccb9bb97": {
+"lng": 113.412675,
+"lat": 23.465325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"ba931f557c6f47aab78e31ca41b6ff44": {
+"lng": 113.16812,
+"lat": 23.460206,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"626a5bd69461407d8d227e82e2b2abd5": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"30e7ec94312441e2bc25d3ec83acb814": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"60f65e30d81645129f93564f61a8d927": {
+"lng": 113.250515,
+"lat": 23.367442,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"e03d3dddf594465ab4cc528e89a30bdb": {
+"lng": 113.235765,
+"lat": 23.345927,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"ea682d9cbc1949108b9b552159a21af4": {
+"lng": 113.234775,
+"lat": 23.388325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"d224cc2517cd4d26bfac7ccaeba1cf1c": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"c8ddd1ce5ef84102895dee6e0ea0f83a": {
+"lng": 113.412675,
+"lat": 23.465325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"295b502f2315455f9c35390f8c9ec628": {
+"lng": 113.184596,
+"lat": 23.430638,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"15ea8218877d4f928184c0adad9cc614": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"76213fef490d471682525fb6969a5d39": {
+"lng": 113.250515,
+"lat": 23.367442,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"37caaee0c0c14808bc1c7d807f97d625": {
+"lng": 113.092748,
+"lat": 23.408535,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"eb55c987b1b044ab8a2e01c123966f67": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"9664d795536f41de8c89662f5f93d384": {
+"lng": 113.412675,
+"lat": 23.465325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"227c182d168d41cfa6d8e71a53900cf8": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"cbe9dc91505c4abba7910d6b0c8bc1be": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"17b4c0417aff450fa501aa8f748adb0d": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"64fb6d746a7c4f86b0edb3d2d4881fac": {
+"lng": 113.188885,
+"lat": 23.369353,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"2f3cc2bd5683405a8c865d1494863673": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"c69bd786bcef42bca82032e5cd82c353": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"eb2f96ce10ca49ec877e06dad57ef24c": {
+"lng": 113.339812,
+"lat": 23.174283,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"4821f9d23346451b8953df7e287cfb23": {
+"lng": 113.254084,
+"lat": 23.433746,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"47b6c255f4a34b15ab2a7eff0c7b871b": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"5844c6c272194c8e9222b8648d7b0c3e": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"80c4841403c54b15a81dd158c97a37c8": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"44f47dda1cef4a9792e4fee8de792c1d": {
+"lng": 113.240007,
+"lat": 23.379976,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"2547c3c66cdf410f8dc0ef046b783ba2": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"3e52fbd88c8b4c10a27e88900374d6e6": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"2f1a7124f48e4971a2157709d974c24a": {
+"lng": 113.16812,
+"lat": 23.460206,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"1708f77750bc41e8b3bbe27bd36af31a": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"67d493764b3f47e9aae0382ef967fe43": {
+"lng": 113.199857,
+"lat": 23.365499,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"e0d7a69c315f4b2ea084485fdb63deeb": {
+"lng": 113.28924,
+"lat": 23.133138,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"ba1843e1579247ed9a714ade7463bc6a": {
+"lng": 113.199857,
+"lat": 23.365499,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"2418dc4d5dc44bd78ded04e3ba619fb7": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"5e422de6ecb64a4493682fccf45fc79d": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"b0307d444256494d9bae41e6505fa2cf": {
+"lng": 113.255915,
+"lat": 23.371089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"eaf361836ac34a44832d65e1735f36d7": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"1f0ec9ecf19446ae8212ed2ed55ca567": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"56535ded03f6492a898456c54e5a601e": {
+"lng": 113.237746,
+"lat": 23.378973,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"f1a919e9f4d04f1b9105c6966958e4b4": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"bee169403cbb4e919a2055ca2f55da54": {
+"lng": 113.219807,
+"lat": 23.38328,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"1a3f53c64d1342958e8419e34752f483": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"28c60046d2664deea54d34c28f464938": {
+"lng": 113.179827,
+"lat": 23.456224,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"4dcda6144d9149fe8b5fbf913843b79c": {
+"lng": 113.242379,
+"lat": 23.378352,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"d4d29a3d9c1c4fdfa49a26f84c3d97d8": {
+"lng": 113.083891,
+"lat": 23.384695,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"46eed69c710a48cc8fb683cb3c38b500": {
+"lng": 113.128895,
+"lat": 23.442758,
+"geo_src": null,
+"geo_approx": true
+},
+"90974a7e6bd54ae4a231da6d14388bdb": {
+"lng": 113.220624,
+"lat": 23.367442,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"62c4cc7e63c64e15a2e0e557ce373797": {
+"lng": 113.240312,
+"lat": 23.377249,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"74928bdc145c4440b13434c76434329b": {
+"lng": 113.203927,
+"lat": 23.432742,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"2a86c0acc90f4e838ab66675393204b2": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"087bee2d0b2a4d4f9ce307c49a2e271d": {
+"lng": 113.412675,
+"lat": 23.465325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"6d3f179d075344f0bcede613e12a5810": {
+"lng": 113.223784,
+"lat": 23.349145,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"5a6505f4218c455099ba0a92372537ee": {
+"lng": 113.24621,
+"lat": 23.435154,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"e7c3a684da494b2e81fac99918234955": {
+"lng": 113.254084,
+"lat": 23.433746,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"7412547263a94bb8b656321bfe233eee": {
+"lng": 113.224774,
+"lat": 23.334508,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"21f52a9720154506ab540e68042306e5": {
+"lng": 113.226753,
+"lat": 23.379946,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"0c03db070ff9411bafcc4cee52223a0b": {
+"lng": 113.180612,
+"lat": 23.395865,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"70d3f93f73ec4212a721f0acdd21ee67": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"031349fa29a0426b8fb82d0b13219cca": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"d18937228589445190a6b84625217a3c": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"dbafecfdf555449190a1775401202a7e": {
+"lng": 113.28924,
+"lat": 23.133138,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"0fddbcc429214185b06a9852a31ecfbb": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"81c7fc1671404d9cac6841d5351df7d7": {
+"lng": 113.220624,
+"lat": 23.367442,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"9b3a2c6afee24b469351fc816f1ca32e": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"c4cbf3327d8445868be67c56901bef2d": {
+"lng": 113.24335,
+"lat": 23.37685,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"7794a81ee9a844bd82d1e935ed133322": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"7d8da092989042f19fcfdf6fcc121c7d": {
+"lng": 113.263998,
+"lat": 23.420706,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"248d2d653ebd4852821f47d2c20eeeb7": {
+"lng": 113.224774,
+"lat": 23.334508,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"83e5107217554c46bb55ab28cf09da38": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"9fa23ede3a16414980c4c8bd5609d80f": {
+"lng": 113.199857,
+"lat": 23.365499,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"800139e8c344498a94522f5209098d1b": {
+"lng": 113.412675,
+"lat": 23.465325,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"45aa67c60f3846a38c0c5ec8c1095d05": {
+"lng": 113.214353,
+"lat": 23.365772,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"20332092471e4147ae0b4f8bc8093de4": {
+"lng": 113.239501,
+"lat": 23.380042,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"f767ab2789ea4ff3b63f0374ad061d12": {
+"lng": 113.339812,
+"lat": 23.174283,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"47045": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"47024": {
+"lng": 113.201283,
+"lat": 23.490064,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"46712": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"46582": {
+"lng": 113.36045,
+"lat": 23.45818,
+"geo_src": "override",
+"geo_approx": false
+},
+"46323": {
+"lng": 113.17535,
+"lat": 23.459838,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"45820": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"45777": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"45634": {
+"lng": 113.212102,
+"lat": 23.409614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"44770": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"44706": {
+"lng": 113.224425,
+"lat": 23.371875,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"44541": {
+"lng": 113.232669,
+"lat": 23.393117,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"43416": {
+"lng": 113.159276,
+"lat": 23.468558,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"7b557034a43a48339ff2c1a9850431e2": {
+"lng": 113.188838,
+"lat": 23.360492,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"43165": {
+"lng": 113.164353,
+"lat": 23.375358,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"42409": {
+"lng": 113.36045,
+"lat": 23.45818,
+"geo_src": "override",
+"geo_approx": false
+},
+"42118": {
+"lng": 113.208852,
+"lat": 23.392435,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"41531": {
+"lng": 113.232669,
+"lat": 23.393117,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"40857": {
+"lng": 113.360185,
+"lat": 23.136551,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"40799": {
+"lng": 113.271997,
+"lat": 23.513675,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"40440": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"39546": {
+"lng": 113.217702,
+"lat": 23.426292,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"39487": {
+"lng": 113.210925,
+"lat": 23.396375,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"39199": {
+"lng": 113.201283,
+"lat": 23.490064,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"38674": {
+"lng": 113.06613,
+"lat": 23.48215,
+"geo_src": "override",
+"geo_approx": false
+},
+"38305": {
+"lng": 113.23035,
+"lat": 23.51056,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"38185": {
+"lng": 113.175451,
+"lat": 23.457305,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"38046": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"37948": {
+"lng": 113.271997,
+"lat": 23.513675,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"37812": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"37480": {
+"lng": 113.164353,
+"lat": 23.375358,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"37194": {
+"lng": 113.232579,
+"lat": 23.39468,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"36686": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"36363": {
+"lng": 113.223723,
+"lat": 23.407977,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"36124": {
+"lng": 113.255915,
+"lat": 23.371089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"35802": {
+"lng": 113.164353,
+"lat": 23.375358,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34985": {
+"lng": 113.200575,
+"lat": 23.367924,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34970": {
+"lng": 113.164353,
+"lat": 23.375358,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34894": {
+"lng": 113.193904,
+"lat": 23.376785,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34841": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34737": {
+"lng": 113.225805,
+"lat": 23.38701,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34252": {
+"lng": 113.245625,
+"lat": 23.37843,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"34168": {
+"lng": 113.225982,
+"lat": 23.410609,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"33859": {
+"lng": 113.255915,
+"lat": 23.371089,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"33784": {
+"lng": 113.36045,
+"lat": 23.45818,
+"geo_src": "override",
+"geo_approx": false
+},
+"33355": {
+"lng": 113.223723,
+"lat": 23.407977,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"33137": {
+"lng": 113.164353,
+"lat": 23.375358,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"33027": {
+"lng": 113.066131,
+"lat": 23.48215,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"32978": {
+"lng": 113.230464,
+"lat": 23.387972,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"32891": {
+"lng": 113.066131,
+"lat": 23.48215,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"32213": {
+"lng": 113.232579,
+"lat": 23.39468,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"32096": {
+"lng": 113.193904,
+"lat": 23.376785,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"31856": {
+"lng": 113.440409,
+"lat": 23.445296,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"31196": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"31104": {
+"lng": 113.440409,
+"lat": 23.445296,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"30528": {
+"lng": 113.223054,
+"lat": 23.38293,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29359": {
+"lng": 113.440409,
+"lat": 23.445296,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29157": {
+"lng": 113.438619,
+"lat": 23.130023,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29042": {
+"lng": 113.440409,
+"lat": 23.445296,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"29020": {
+"lng": 113.440409,
+"lat": 23.445296,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"28938": {
+"lng": 113.22838,
+"lat": 23.407163,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"28485": {
+"lng": 113.225805,
+"lat": 23.38701,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"28339": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"27827": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"27581": {
+"lng": 113.182416,
+"lat": 23.37338,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"26926": {
+"lng": 113.438619,
+"lat": 23.130023,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"26544": {
+"lng": 113.249782,
+"lat": 23.363129,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"26144": {
+"lng": 113.23035,
+"lat": 23.51056,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000025088": {
+"lng": 113.248068,
+"lat": 23.433275,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000025048": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000025020": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000025007": {
+"lng": 113.222925,
+"lat": 23.349475,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024997": {
+"lng": 113.277044,
+"lat": 23.104736,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024993": {
+"lng": 113.226753,
+"lat": 23.379946,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024864": {
+"lng": 113.229975,
+"lat": 23.421425,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024797": {
+"lng": 113.247823,
+"lat": 23.430986,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024609": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024322": {
+"lng": 113.181066,
+"lat": 23.378821,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024285": {
+"lng": 113.224471,
+"lat": 23.486722,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024254": {
+"lng": 113.240312,
+"lat": 23.377249,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000024163": {
+"lng": 113.180913,
+"lat": 23.406696,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023923": {
+"lng": 113.246212,
+"lat": 23.431874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023734": {
+"lng": 113.232577,
+"lat": 23.408292,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023730": {
+"lng": 113.219575,
+"lat": 23.413286,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023721": {
+"lng": 113.232577,
+"lat": 23.408292,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023716": {
+"lng": 113.219575,
+"lat": 23.413286,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023608": {
+"lng": 113.240007,
+"lat": 23.379976,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023467": {
+"lng": 113.226753,
+"lat": 23.379946,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023272": {
+"lng": 113.185336,
+"lat": 23.388387,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000023207": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023076": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023075": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023074": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023072": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023049": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023048": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023047": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023046": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023045": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023044": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023043": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023042": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000023038": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022983": {
+"lng": 113.179827,
+"lat": 23.456224,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022892": {
+"lng": 113.220125,
+"lat": 23.404326,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022882": {
+"lng": 113.220125,
+"lat": 23.404326,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022875": {
+"lng": 113.178413,
+"lat": 23.405964,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022872": {
+"lng": 113.220125,
+"lat": 23.404326,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022864": {
+"lng": 113.220125,
+"lat": 23.404326,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"22853": {
+"lng": 113.224425,
+"lat": 23.371875,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022734": {
+"lng": 113.188838,
+"lat": 23.360492,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022733": {
+"lng": 113.246826,
+"lat": 23.387368,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022713": {
+"lng": 113.247823,
+"lat": 23.430986,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22667": {
+"lng": 113.19274,
+"lat": 23.482229,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022590": {
+"lng": 113.262486,
+"lat": 23.367838,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022532": {
+"lng": 113.242379,
+"lat": 23.378352,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022461": {
+"lng": 113.242379,
+"lat": 23.378352,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22428": {
+"lng": 113.23555,
+"lat": 23.401973,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022383": {
+"lng": 113.242379,
+"lat": 23.378352,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22376": {
+"lng": 113.339355,
+"lat": 23.143772,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22329": {
+"lng": 113.177479,
+"lat": 23.477324,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022316": {
+"lng": 113.111717,
+"lat": 23.335114,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022263": {
+"lng": 113.233919,
+"lat": 23.400092,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000022242": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022238": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22229": {
+"lng": 113.18484,
+"lat": 23.468353,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022188": {
+"lng": 113.228333,
+"lat": 23.427012,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022168": {
+"lng": 113.240277,
+"lat": 23.429549,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022131": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022111": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000022075": {
+"lng": 113.242379,
+"lat": 23.378352,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22037": {
+"lng": 113.18484,
+"lat": 23.468353,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"22004": {
+"lng": 113.153617,
+"lat": 23.468562,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021808": {
+"lng": 113.208158,
+"lat": 23.412582,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021795": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021792": {
+"lng": 113.228333,
+"lat": 23.427012,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021761": {
+"lng": 113.242379,
+"lat": 23.378352,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021748": {
+"lng": 113.234169,
+"lat": 23.408425,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021732": {
+"lng": 113.193324,
+"lat": 23.428685,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021633": {
+"lng": 113.185336,
+"lat": 23.388387,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021632": {
+"lng": 113.185336,
+"lat": 23.388387,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021609": {
+"lng": 113.21809,
+"lat": 23.488668,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021585": {
+"lng": 113.417374,
+"lat": 23.42521,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"21543": {
+"lng": 113.182416,
+"lat": 23.37338,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021529": {
+"lng": 113.242029,
+"lat": 23.381351,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021484": {
+"lng": 113.224949,
+"lat": 23.422156,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021447": {
+"lng": 113.242029,
+"lat": 23.381351,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021403": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021335": {
+"lng": 113.193324,
+"lat": 23.428685,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021276": {
+"lng": 113.185336,
+"lat": 23.388387,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"21250": {
+"lng": 113.249223,
+"lat": 23.359871,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021230": {
+"lng": 113.248226,
+"lat": 23.388033,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021205": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021180": {
+"lng": 113.240007,
+"lat": 23.379976,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000021178": {
+"lng": 113.224949,
+"lat": 23.422156,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000021061": {
+"lng": 113.240007,
+"lat": 23.379976,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020750": {
+"lng": 113.234711,
+"lat": 23.432236,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"20642": {
+"lng": 113.182416,
+"lat": 23.37338,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020631": {
+"lng": 113.260882,
+"lat": 23.374315,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"20580": {
+"lng": 113.170025,
+"lat": 23.447525,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020353": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020352": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020343": {
+"lng": 113.227118,
+"lat": 23.426708,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020331": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020245": {
+"lng": 113.240312,
+"lat": 23.377249,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020206": {
+"lng": 113.113979,
+"lat": 23.337644,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020165": {
+"lng": 113.208158,
+"lat": 23.412582,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"20140": {
+"lng": 113.17915,
+"lat": 23.449989,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020013": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020010": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020009": {
+"lng": 113.218688,
+"lat": 23.494735,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000020003": {
+"lng": 113.309596,
+"lat": 23.149191,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019912": {
+"lng": 113.368546,
+"lat": 23.414966,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019676": {
+"lng": 113.213128,
+"lat": 23.391021,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019582": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019541": {
+"lng": 113.208158,
+"lat": 23.412582,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"19461": {
+"lng": 113.201283,
+"lat": 23.490064,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019458": {
+"lng": 113.24768,
+"lat": 23.387314,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"19438": {
+"lng": 113.191217,
+"lat": 23.393302,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000019417": {
+"lng": 113.260882,
+"lat": 23.374315,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019311": {
+"lng": 113.181662,
+"lat": 23.375247,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019237": {
+"lng": 113.223351,
+"lat": 23.423234,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019073": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019070": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019069": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000019004": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018984": {
+"lng": 113.174291,
+"lat": 23.463718,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"18980": {
+"lng": 113.231335,
+"lat": 23.396907,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"18936": {
+"lng": 113.250502,
+"lat": 23.353039,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018856": {
+"lng": 113.364214,
+"lat": 23.443461,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018777": {
+"lng": 113.248226,
+"lat": 23.388033,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"18723": {
+"lng": 113.23555,
+"lat": 23.401973,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018717": {
+"lng": 113.23035,
+"lat": 23.51056,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018697": {
+"lng": 113.217014,
+"lat": 23.407046,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"18685": {
+"lng": 113.23555,
+"lat": 23.401973,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018651": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018569": {
+"lng": 113.236011,
+"lat": 23.417933,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000018564": {
+"lng": 113.248226,
+"lat": 23.388033,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000018293": {
+"lng": 113.1993,
+"lat": 23.396871,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017965": {
+"lng": 113.225385,
+"lat": 23.426967,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017631": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000017401": {
+"lng": 113.218024,
+"lat": 23.403476,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000017400": {
+"lng": 113.211833,
+"lat": 23.404399,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000017067": {
+"lng": 113.248226,
+"lat": 23.388033,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016858": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016792": {
+"lng": 113.174295,
+"lat": 23.427156,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016624": {
+"lng": 113.184745,
+"lat": 23.370213,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000016578": {
+"lng": 113.413925,
+"lat": 23.429025,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016440": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016340": {
+"lng": 113.15542,
+"lat": 23.380076,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000016242": {
+"lng": 113.178183,
+"lat": 23.387721,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000016220": {
+"lng": 113.190919,
+"lat": 23.412476,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015956": {
+"lng": 113.234169,
+"lat": 23.408425,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015809": {
+"lng": 113.220373,
+"lat": 23.343401,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015692": {
+"lng": 113.182698,
+"lat": 23.372566,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000015689": {
+"lng": 113.208158,
+"lat": 23.412582,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015672": {
+"lng": 113.220125,
+"lat": 23.404326,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000015516": {
+"lng": 113.208158,
+"lat": 23.412582,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015379": {
+"lng": 113.260882,
+"lat": 23.374315,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000015092": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"b22fe842c8004048bb2edfad480148dc": {
+"lng": 113.179827,
+"lat": 23.456224,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014885": {
+"lng": 113.189451,
+"lat": 23.422386,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014616": {
+"lng": 113.304375,
+"lat": 23.433825,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014400": {
+"lng": 113.233239,
+"lat": 23.399874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014393": {
+"lng": 113.113979,
+"lat": 23.337644,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014321": {
+"lng": 113.193858,
+"lat": 23.419227,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000014063": {
+"lng": 113.197113,
+"lat": 23.418458,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013970": {
+"lng": 113.184596,
+"lat": 23.430638,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013857": {
+"lng": 113.359178,
+"lat": 23.456184,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000013830": {
+"lng": 113.368546,
+"lat": 23.414966,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013697": {
+"lng": 113.226016,
+"lat": 23.385854,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013668": {
+"lng": 113.265767,
+"lat": 23.430532,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000013643": {
+"lng": 113.177905,
+"lat": 23.42614,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013610": {
+"lng": 113.245625,
+"lat": 23.37843,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013436": {
+"lng": 113.153386,
+"lat": 23.372433,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013423": {
+"lng": 113.233239,
+"lat": 23.399874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013406": {
+"lng": 113.200575,
+"lat": 23.367924,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013364": {
+"lng": 113.275734,
+"lat": 23.437667,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013335": {
+"lng": 113.184726,
+"lat": 23.374656,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013250": {
+"lng": 113.222395,
+"lat": 23.344972,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013239": {
+"lng": 113.246228,
+"lat": 23.383424,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013172": {
+"lng": 113.153386,
+"lat": 23.372433,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013170": {
+"lng": 113.153386,
+"lat": 23.372433,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013107": {
+"lng": 113.113979,
+"lat": 23.337644,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013104": {
+"lng": 113.231728,
+"lat": 23.334484,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013080": {
+"lng": 113.271462,
+"lat": 23.439425,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013070": {
+"lng": 113.208579,
+"lat": 23.414812,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013066": {
+"lng": 113.200885,
+"lat": 23.390985,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013055": {
+"lng": 113.212137,
+"lat": 23.419048,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013054": {
+"lng": 113.110234,
+"lat": 23.337247,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013043": {
+"lng": 113.231691,
+"lat": 23.403951,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000013040": {
+"lng": 113.235815,
+"lat": 23.390623,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000013031": {
+"lng": 113.184234,
+"lat": 23.378919,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012787": {
+"lng": 113.197113,
+"lat": 23.418458,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012766": {
+"lng": 113.23361,
+"lat": 23.385838,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012712": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012692": {
+"lng": 113.23035,
+"lat": 23.51056,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012688": {
+"lng": 113.235751,
+"lat": 23.391939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012648": {
+"lng": 113.235751,
+"lat": 23.391939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012522": {
+"lng": 113.23555,
+"lat": 23.401973,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012495": {
+"lng": 113.164334,
+"lat": 23.395909,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012448": {
+"lng": 113.23035,
+"lat": 23.51056,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012380": {
+"lng": 113.195296,
+"lat": 23.381483,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012364": {
+"lng": 113.271795,
+"lat": 23.438612,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000012350": {
+"lng": 113.175451,
+"lat": 23.457305,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012349": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000012334": {
+"lng": 113.228912,
+"lat": 23.388065,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012325": {
+"lng": 113.178557,
+"lat": 23.422532,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012220": {
+"lng": 113.233239,
+"lat": 23.399874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012183": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000012171": {
+"lng": 113.235751,
+"lat": 23.391939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012166": {
+"lng": 113.23523,
+"lat": 23.389585,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012127": {
+"lng": 113.228958,
+"lat": 23.468921,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012071": {
+"lng": 113.235751,
+"lat": 23.391939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012068": {
+"lng": 113.235751,
+"lat": 23.391939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000012022": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011984": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000011982": {
+"lng": 113.184726,
+"lat": 23.374656,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011950": {
+"lng": 113.280007,
+"lat": 23.454568,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011911": {
+"lng": 113.213589,
+"lat": 23.440994,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000011893": {
+"lng": 113.187304,
+"lat": 23.444569,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011664": {
+"lng": 113.25842,
+"lat": 23.375598,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011640": {
+"lng": 113.210217,
+"lat": 23.416396,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011639": {
+"lng": 113.200788,
+"lat": 23.379416,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011579": {
+"lng": 113.235751,
+"lat": 23.391939,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011506": {
+"lng": 113.211972,
+"lat": 23.376883,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011235": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000011181": {
+"lng": 113.223397,
+"lat": 23.357401,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011168": {
+"lng": 113.198992,
+"lat": 23.401793,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011131": {
+"lng": 113.18484,
+"lat": 23.468353,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011114": {
+"lng": 113.18484,
+"lat": 23.468353,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000011010": {
+"lng": 113.225267,
+"lat": 23.393037,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010961": {
+"lng": 113.06613,
+"lat": 23.48215,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010908": {
+"lng": 113.233239,
+"lat": 23.399874,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010872": {
+"lng": 113.191949,
+"lat": 23.429785,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010856": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010820": {
+"lng": 113.162806,
+"lat": 23.462135,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010745": {
+"lng": 113.211682,
+"lat": 23.419531,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010716": {
+"lng": 113.16812,
+"lat": 23.460206,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010707": {
+"lng": 113.221842,
+"lat": 23.391767,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010628": {
+"lng": 113.358752,
+"lat": 23.458268,
+"geo_src": "amap_geo",
+"geo_approx": false
+},
+"100000010451": {
+"lng": 113.36045,
+"lat": 23.45818,
+"geo_src": "override",
+"geo_approx": false
+},
+"100000010237": {
+"lng": 113.209587,
+"lat": 23.418266,
+"geo_src": "amap_poi",
+"geo_approx": false
+},
+"100000010092": {
+"lng": 113.214485,
+"lat": 23.379218,
+"geo_src": "amap_geo",
+"geo_approx": false
+}
 }
