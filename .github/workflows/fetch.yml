@@ -16,7 +16,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +30,9 @@ jobs:
 
       - name: 聚类统一板块（按"核心楼盘名+开发商"归并预售证，杜绝同一楼盘被拆到不同板块）
         run: python3 fix_grouping.py
+
+      - name: 补抓空楼栋明细（fetch_fast 只抓 summary，每轮重建后 detail 可能为空；只对 buildings=[] 的盘补抓，耗时分摊）
+        run: python3 refetch_all_empty_buildings.py
 
       - name: 提交并推送（抓取完整 + 文件有变化才提交）
         run: |
