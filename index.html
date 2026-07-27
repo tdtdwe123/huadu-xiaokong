@@ -366,14 +366,23 @@ function renderDetail(idx, targetId){
   const sum = d.summary || {};
   const r = p.roster;
   const info = d.info || {};
-  // preSellNo 为空 → 未取得预售证，不纳入销售池
+  // preSellNo 为空 → 未取得预售证（未纳入预售），官网用 ★ 标记；但仍可能有单元销控表
   const hasPresell = !!(info.preSellNo || p.presell);
-  // 与列表一致：优先用官网名册口径
-  const sold = (r && r.sold!=null) ? r.sold : (sum.totalSaleNum || 0);
-  const unsold = (r && r.unsold!=null) ? r.unsold : (sum.totalNosoldNum || 0);
-  const total = sum.allowPresellNum || (sold+unsold) || 0;
-  const npCount = hasPresell ? 0 : (sold + unsold); // 未纳入预售盘的参考总套数
   const blds = d.buildings || [];
+  const hasBlds = blds.length > 0;
+  // 优先从单元销控表实时统计（与阳光家缘官网销控表口径一致）；楼栋数据缺失时回退名册/摘要口径
+  let dSold=0, dUnsold=0, dTotal=0;
+  if(hasBlds){
+    blds.forEach(b=>(b.floors||[]).forEach(f=>(f.units||[]).forEach(u=>{
+      const s = inferStatus(u); dTotal++;
+      if(s===5) dSold++; else if(s===2||s===4) dUnsold++;
+    })));
+  }
+  const useDetail = hasBlds && dTotal>0;
+  const sold   = useDetail ? dSold   : ((r && r.sold!=null)   ? r.sold   : (sum.totalSaleNum||0));
+  const unsold = useDetail ? dUnsold : ((r && r.unsold!=null) ? r.unsold : (sum.totalNosoldNum||0));
+  const total  = useDetail ? dTotal  : (sum.allowPresellNum || (sold+unsold) || 0);
+  const npCount = hasPresell ? 0 : (sold + unsold); // 未纳入预售盘的参考总套数（冗余保留）
   el.innerHTML = `
     <div class="info">
       ${al?`<b>推广名：</b><span class="infobn">${esc(al.alias)}</span><br>`:''}
@@ -386,14 +395,9 @@ function renderDetail(idx, targetId){
       <b>总面积：</b>${esc(info.totalBuildingArea||'-')}㎡
     </div>
     <div class="stat-box">
-      ${hasPresell?`
       <div class="stat sold"><div class="n">${sold}</div><div class="l">已售</div></div>
       <div class="stat unsold"><div class="n">${unsold}</div><div class="l">未售</div></div>
       <div class="stat total"><div class="n">${total}</div><div class="l">总套数</div></div>
-      `:`
-      <div class="stat np"><div class="n">${npCount}</div><div class="l">未纳入预售</div></div>
-      <div class="stat total"><div class="n">${npCount}</div><div class="l">总套数</div></div>
-      `}
     </div>
     <div class="legend">
       <span><i style="background:#52c41a"></i>可售</span>
@@ -427,13 +431,18 @@ const FLOOR_PAGE = 22;
 
 function floorsHTML(b, idx, bi, start){
   const end = Math.min(start + FLOOR_PAGE, b.floors.length);
+  // 未纳入预售（未取得预售证）的盘，其全部单元官网标 ★；优先用项目级 presell 判定，
+  // 单元级 preSellStatus 作为补充（部分历史数据缺失该字段）。
+  const p0 = (typeof filtered!=='undefined' && filtered && filtered[idx]) || {};
+  const info0 = (p0.detail && p0.detail.info) || {};
+  const isProjNP = !(info0.preSellNo || p0.presell);
   let h = '';
   for(let fi=start; fi<end; fi++){
     const f = b.floors[fi];
     h += '<div class="floor"><span class="fl">'+esc(f.floor)+'</span>'
        + f.units.map((u,ui)=>{
            const s = inferStatus(u);
-           const isNP = u.preSellStatus === 0;  // 未纳入预售，官网标 ★
+           const isNP = isProjNP || u.preSellStatus === 0;  // 未纳入预售，官网标 ★
            return '<span class="unit'+(isNP?' np':'')+'" data-s="'+s+'"'+(isNP?' title="未纳入预售"':'')+' onclick="showUnit('+idx+','+bi+','+fi+','+ui+')">'
              + '<span class="un">'+esc(u.unitNum||'')+(isNP?'<i class="mark">★</i>':'')+'</span>'
              + '<span class="ua">'+esc(fmtArea(u.totalArea))+'㎡</span>'
