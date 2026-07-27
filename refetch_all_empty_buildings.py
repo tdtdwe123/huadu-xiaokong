@@ -24,26 +24,37 @@ def main():
     byid = {p["id"]: p for p in projs}
     ok = 0
     skipped = 0
-    for i, p in enumerate(targets, 1):
-        pid = p["id"]
-        det = FR.fetch_project(pid)
-        time.sleep(0.6)
-        if det and det.get("buildings"):
-            byid[pid]["detail"] = det
-            ok += 1
-            print(f"[{i}/{len(targets)}] {p['name'][:30]} -> {len(det['buildings'])} 栋", flush=True)
-        else:
-            skipped += 1
-            print(f"[{i}/{len(targets)}] {p['name'][:30]} -> 仍无楼栋", flush=True)
 
-    # 更新顶层元数据
-    d["updated"] = time.strftime("%Y-%m-%d %H:%M:%S")
-    d["count"] = len(projs)
+    def save():
+        d["updated"] = time.strftime("%Y-%m-%d %H:%M:%S")
+        d["count"] = len(projs)
+        tmp = DATA + ".tmp"
+        json.dump(d, open(tmp, "w", encoding="utf-8"),
+                  ensure_ascii=False, separators=(",", ":"))
+        os.replace(tmp, DATA)
 
-    tmp = DATA + ".tmp"
-    json.dump(d, open(tmp, "w", encoding="utf-8"),
-              ensure_ascii=False, separators=(",", ":"))
-    os.replace(tmp, DATA)
+    last_save = 0
+    try:
+        for i, p in enumerate(targets, 1):
+            pid = p["id"]
+            det = FR.fetch_project(pid)
+            time.sleep(0.6)
+            if det and det.get("buildings"):
+                byid[pid]["detail"] = det
+                ok += 1
+                print(f"[{i}/{len(targets)}] {p['name'][:30]} -> {len(det['buildings'])} 栋", flush=True)
+            else:
+                skipped += 1
+                print(f"[{i}/{len(targets)}] {p['name'][:30]} -> 仍无楼栋", flush=True)
+            if (i - last_save) >= 25:
+                save(); last_save = i
+                print(f"[{i}/{len(targets)}] 已保存（成功 {ok}）", flush=True)
+        save()
+    except (KeyboardInterrupt, Exception) as e:
+        save()
+        print(f"⚠ 中断({type(e).__name__})，已保存进度: 成功 {ok}", flush=True)
+        raise
+
     print(f"\n完成：成功填充 {ok}/{len(targets)}（{skipped} 个 API 仍无），已写回 {DATA}")
 
 
