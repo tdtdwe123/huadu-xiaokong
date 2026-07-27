@@ -109,6 +109,14 @@ def fetch_project(pid, retries=3, timeout=20):
                             "floorNum": u.get("floorNum"),
                             "status": u.get("status"),
                             "houseStatusId": u.get("houseStatusId"),
+                            # 官网销控表图例标记（★未纳入预售/△回迁/□自用/☆公建/▲直管/■分成/◆抵押/●查封/○已签约/■已备案）
+                            "preSellStatus": u.get("preSellStatus"),
+                            "backMove": u.get("backMove"),
+                            "useself": u.get("useself"),
+                            "commonMatch": u.get("commonMatch"),
+                            "directly": u.get("directly"),
+                            "divide": u.get("divide"),
+                            "pactStatus": u.get("pactStatus"),
                         })
                     units.append({"floor": floor, "units": row})
             buildings.append({"id": bid, "name": bname, "floors": units})
