@@ -23,6 +23,7 @@ import fetch_robust as FR
 BASE = os.path.dirname(os.path.abspath(__file__))
 PROJECTS_FILE = os.path.join(BASE, "projects.json")
 OUTPUT_FILE = os.path.join(BASE, "data.json")
+COORD_OV_FILE = os.path.join(BASE, "coord_overrides.json")
 STATUS_FILE = os.path.join(BASE, "fetch_status.json")
 
 ROSTER_URL = "https://zfcj.gz.gov.cn/ysqgk/Api/WebApi/fdcxmxxlb.ashx"
@@ -150,6 +151,17 @@ def main():
         except Exception:
             pass
 
+    # coord override table (by id): amap POI/geocode corrections, reapplied every rebuild
+    coord_ov = {}
+    if os.path.exists(COORD_OV_FILE):
+        try:
+            raw = json.load(open(COORD_OV_FILE, encoding="utf-8"))
+            for k, v in raw.items():
+                if not k.startswith("_") and isinstance(v, dict):
+                    coord_ov[k] = v
+        except Exception:
+            pass
+
     # ---- Phase A：轻量摘要（全量） ----
     print(f"Phase A 摘要请求 {total} 个（{SUMMARY_WORKERS} 线程）…", flush=True)
     summaries = {}     # pid -> (info, summary)
@@ -252,6 +264,13 @@ def main():
             rec["lng"], rec["lat"] = o["lng"], o["lat"]
             rec["geo_approx"] = o.get("geo_approx")
             rec["geo_src"] = o.get("geo_src")
+        # coord override (by id) wins: reapplied every hourly rebuild so corrections never revert
+        cov = coord_ov.get(pid)
+        if cov and cov.get("lng") and cov.get("lat"):
+            rec["lng"] = round(float(cov["lng"]), 6)
+            rec["lat"] = round(float(cov["lat"]), 6)
+            rec["geo_approx"] = bool(cov.get("geo_approx", False))
+            rec["geo_src"] = cov.get("geo_src") or rec.get("geo_src") or "override"
         # 明细优先级：本轮新鲜抓取 > 旧 detail > 无
         if pid in fresh_detail:
             rec["detail"] = fresh_detail[pid]
