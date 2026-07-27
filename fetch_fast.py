@@ -162,6 +162,16 @@ def main():
         except Exception:
             pass
 
+    # 已确认无楼栋的盘（API 确无数据）缓存：避免每个周期对它们重复全量抓取浪费配额。
+    # 仅当项目摘要（指纹）变动时才重新抓取，故即便缓存也不会永久漏掉新出现的楼栋。
+    EMPTY_CACHE_FILE = os.path.join(BASE, "empty_buildings.json")
+    empty_cache = set()
+    if os.path.exists(EMPTY_CACHE_FILE):
+        try:
+            empty_cache = set(json.load(open(EMPTY_CACHE_FILE, encoding="utf-8")))
+        except Exception:
+            empty_cache = set()
+
     # ---- Phase A：轻量摘要（全量） ----
     print(f"Phase A 摘要请求 {total} 个（{SUMMARY_WORKERS} 线程）…", flush=True)
     summaries = {}     # pid -> (info, summary)
@@ -198,7 +208,7 @@ def main():
         pid = p["id"]
         o = old.get(pid)
         new_fp = fingerprint(summaries.get(pid), (info_only.get(pid) or {}).get("preSellNo"))
-        if not o or not o.get("detail"):
+        if not o or not o.get("detail") or (o.get("detail") and not o["detail"].get("buildings") and not o["detail"].get("empty") and pid not in empty_cache):
             need_full.append(p)                      # 尚无明细 → 必抓
         else:
             # 旧指纹：优先顶层 summary，回退到 detail.summary（fetch_robust 旧结构）
@@ -222,6 +232,12 @@ def main():
             _, det = fut.result()
             with lock:
                 if det:
+                    if not det.get("buildings"):
+                        empty_cache.add(p["id"])          # 确认无楼栋，后续周期跳过
+                        det["empty"] = True
+                    else:
+                        empty_cache.discard(p["id"])
+                        det.pop("empty", None)
                     fresh_detail[p["id"]] = det
                 done[0] += 1
                 if done[0] % 10 == 0 or done[0] == len(need_full):
@@ -307,6 +323,11 @@ def main():
         "changed": changed,
         "elapsed_sec": round(time.time() - t0, 1),
     }
+    try:
+        json.dump(sorted(empty_cache), open(EMPTY_CACHE_FILE, "w", encoding="utf-8"),
+                  ensure_ascii=False)
+    except Exception:
+        pass
     json.dump(status, open(STATUS_FILE, "w", encoding="utf-8"), ensure_ascii=False)
     has_detail = sum(1 for p in out_projects if p.get("detail"))
     print(f"\n完成：摘要{ok[0]}/{total}，完整抓取{len(need_full)}个（成功{len(fresh_detail)}），"
