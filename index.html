@@ -60,6 +60,9 @@ header .sub{font-size:11px;opacity:.85;margin-top:2px}
 .unit[data-s="6"]{background:#868e96}
 .unit[data-s="1"],.unit[data-s="3"]{background:#dee2e6;color:#888}
 .unit[data-s="0"],.unit:not([data-s]){background:#dee2e6;color:#888}
+/* 未纳入预售：可售绿底叠加 ★ 角标；官网图例为 ★ */
+.unit.np{box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.unit.np .mark{position:absolute;top:-1px;right:1px;font-size:8px;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.6);font-style:normal;line-height:1}
 .unit-pop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:100;align-items:center;justify-content:center}
 .unit-pop.show{display:flex}
 .unit-pop-box{background:#fff;border-radius:12px;padding:18px 20px 14px;max-width:320px;width:84%;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.25)}
@@ -397,6 +400,7 @@ function renderDetail(idx, targetId){
       <span><i style="background:#e8590c"></i>已售</span>
       <span><i style="background:#868e96"></i>冻结</span>
       <span><i style="background:#dee2e6"></i>不可售</span>
+      <span><i style="background:#52c41a;position:relative">★</i>未纳入预售</span>
     </div>
     <div class="buildings">
       ${blds.length===0?'<div class="err">暂无楼栋销控数据</div>':
@@ -429,8 +433,9 @@ function floorsHTML(b, idx, bi, start){
     h += '<div class="floor"><span class="fl">'+esc(f.floor)+'</span>'
        + f.units.map((u,ui)=>{
            const s = inferStatus(u);
-           return '<span class="unit" data-s="'+s+'" onclick="showUnit('+idx+','+bi+','+fi+','+ui+')">'
-             + '<span class="un">'+esc(u.unitNum||'')+'</span>'
+           const isNP = u.preSellStatus === 0;  // 未纳入预售，官网标 ★
+           return '<span class="unit'+(isNP?' np':'')+'" data-s="'+s+'"'+(isNP?' title="未纳入预售"':'')+' onclick="showUnit('+idx+','+bi+','+fi+','+ui+')">'
+             + '<span class="un">'+esc(u.unitNum||'')+(isNP?'<i class="mark">★</i>':'')+'</span>'
              + '<span class="ua">'+esc(fmtArea(u.totalArea))+'㎡</span>'
              + '</span>';
          }).join('')
