@@ -34,6 +34,9 @@ jobs:
       - name: 补抓空楼栋明细（fetch_fast 只抓 summary，每轮重建后 detail 可能为空；只对 buildings=[] 的盘补抓，耗时分摊）
         run: python3 refetch_all_empty_buildings.py
 
+      - name: 补抓单元标记字段（preSellStatus 等官网图例；脚本会自动跳过已有字段的盘）
+        run: python3 refetch_unit_marks.py
+
       - name: 提交并推送（抓取完整 + 文件有变化才提交）
         run: |
           git config user.name "github-actions[bot]"
