@@ -152,10 +152,10 @@ function statusText(s){
 }
 
 function inferStatus(u){
-  // 如果 status 缺失，尝试从 pledgeStatus/closed 推断
-  if(u.status!=null) return u.status;
-  if(u.closed) return 6;
-  if(u.pledgeStatus) return 4;
+  // 如果 s 缺失，尝试从 ps/c 推断
+  if(u.s!=null) return u.s;
+  if(u.c) return 6;
+  if(u.ps) return 4;
   return 2;
 }
 
@@ -432,7 +432,7 @@ const FLOOR_PAGE = 22;
 function floorsHTML(b, idx, bi, start){
   const end = Math.min(start + FLOOR_PAGE, b.floors.length);
   // 未纳入预售（未取得预售证）的盘，其全部单元官网标 ★；优先用项目级 presell 判定，
-  // 单元级 preSellStatus 作为补充（部分历史数据缺失该字段）。
+  // 单元级 p 作为补充（部分历史数据缺失该字段）。
   const p0 = (typeof filtered!=='undefined' && filtered && filtered[idx]) || {};
   const info0 = (p0.detail && p0.detail.info) || {};
   const isProjNP = !(info0.preSellNo || p0.presell);
@@ -442,10 +442,10 @@ function floorsHTML(b, idx, bi, start){
     h += '<div class="floor"><span class="fl">'+esc(f.floor)+'</span>'
        + f.units.map((u,ui)=>{
            const s = inferStatus(u);
-           const isNP = isProjNP || u.preSellStatus === 0;  // 未纳入预售，官网标 ★
+           const isNP = isProjNP || u.p === 0;  // 未纳入预售，官网标 ★
            return '<span class="unit'+(isNP?' np':'')+'" data-s="'+s+'"'+(isNP?' title="未纳入预售"':'')+' onclick="showUnit('+idx+','+bi+','+fi+','+ui+')">'
-             + '<span class="un">'+esc(u.unitNum||'')+(isNP?'<i class="mark">★</i>':'')+'</span>'
-             + '<span class="ua">'+esc(fmtArea(u.totalArea))+'㎡</span>'
+             + '<span class="un">'+esc(u.n||'')+(isNP?'<i class="mark">★</i>':'')+'</span>'
+             + '<span class="ua">'+esc(fmtArea(u.a))+'㎡</span>'
              + '</span>';
          }).join('')
        + '</div>';
@@ -513,12 +513,12 @@ function showUnit(idx,bi,fi,ui){
   const s = inferStatus(u);
   const body = document.getElementById('unitPopBody');
   body.innerHTML = `
-    <div class="ttl">${esc(u.unitNum||'')}</div>
+    <div class="ttl">${esc(u.n||'')}</div>
     <div class="row"><span class="k">状态</span><span class="v" style="color:${statusColor(s)}">${statusText(s)}</span></div>
-    <div class="row"><span class="k">户型</span><span class="v">${esc(u.unitType||'-')}</span></div>
-    <div class="row"><span class="k">建筑面积</span><span class="v">${esc(fmtArea(u.totalArea))} ㎡</span></div>
-    <div class="row"><span class="k">套内面积</span><span class="v">${esc(fmtArea(u.inArea))} ㎡</span></div>
-    <div class="row"><span class="k">功能</span><span class="v">${esc(u.houseFunction||'-')}</span></div>
+    <div class="row"><span class="k">户型</span><span class="v">${esc(u.t||'-')}</span></div>
+    <div class="row"><span class="k">建筑面积</span><span class="v">${esc(fmtArea(u.a))} ㎡</span></div>
+    <div class="row"><span class="k">套内面积</span><span class="v">${esc(fmtArea(u.i))} ㎡</span></div>
+    <div class="row"><span class="k">功能</span><span class="v">${esc(u.f||'-')}</span></div>
   `;
   document.getElementById('unitPop').classList.add('show');
 }
