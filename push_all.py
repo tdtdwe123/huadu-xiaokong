@@ -30,11 +30,21 @@ FILES = [
 # \u524d\u7aef index.html \u65e0\u9700\u4efb\u4f55\u6539\u52a8\u3002
 _UNIT_DROP = {"floorNum", "houseStatusId", "backMove", "useself",
               "commonMatch", "directly", "divide", "pactStatus"}
+_KEY_MAP = {"unitNum": "n", "totalArea": "a", "status": "s",
+            "preSellStatus": "p", "houseFunction": "f", "unitType": "t",
+            "inArea": "i", "closed": "c", "pledgeStatus": "ps"}
 
 
 def _norm_unit(u):
-    return {k: (round(v, 2) if k in ("totalArea", "inArea") and isinstance(v, float) else v)
-            for k, v in u.items() if k not in _UNIT_DROP}
+    out = {}
+    for k, v in u.items():
+        if k in _UNIT_DROP:
+            continue
+        nk = _KEY_MAP.get(k, k)
+        if k in ("totalArea", "inArea") and isinstance(v, float):
+            v = round(v, 2)
+        out[nk] = v
+    return out
 
 
 def _norm_proj(p):
